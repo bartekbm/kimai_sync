@@ -1,5 +1,6 @@
 import requests
 import json
+from datetime import date, timedelta
 #walidacja daty
 class KimaiLoader:
     
@@ -7,8 +8,8 @@ class KimaiLoader:
       print("hello")
     
     def authentication(self):
-      name = input("Twoj login")
-      password = input("Twoje haslo")
+      name = "bartek"#input("Twoj login")
+      password = "wafel123"#input("Twoje haslo")
       params = [name,password]
       return self.api_payload('authenticate',params)
   
@@ -36,20 +37,44 @@ class KimaiLoader:
       return api_key
     
     def set_new_record(self,api_key):
-      
-      start = input(" Podaj date startowa eg 2019-02-03 07:00:00")
-      end = input(" Podaj date koncowa eg 2019-02-03 09:00:00")
-      data = {"projectId":1,"taskId":2,"start":start,"end":end,"commentType":"","statusId":1}
-      params = [api_key,data]
-      return self.api_payload('setTimesheetRecord',params)
-      
+      working_hours_start = "07:00:00"#input ("Podaj o ktorej zaczynasz prace eg 07:00:00")
+      working_hours_end = "15:00:00"#input ("Podaj o ktorej konczysz prace eg 15:00:00")
+      start = "2019-02-02"#input(" Podaj date od ktorej zaczynasz zmiane eg 2019-02-02")
+      end = "2019-02-05"#input(" Podaj date koncowa eg 2019-02-05")
+      day_list = self.between_dates(start,end,working_hours_start,working_hours_end)
+      data_to_api=[]
+      a = 0
+      while a != len(day_list):
+        data = {"projectId":1,"taskId":2,"start":day_list[a][0],"end":day_list[a][1],"commentType":"","statusId":1}
+        data_to_api.append([data])
+        a += 1
+      b = 0
+      while b != len(data_to_api):
+        params = [api_key,data_to_api[b][0]]
+        print(self.api_payload('setTimesheetRecord',params))
+        b += 1
+    def between_dates(self,start,end,start_h, end_h):
+      d1 = date(int(start[:4]),int(start[5:7]),int(start[8:10]))
+      d2 = date(int(end[:4]),int(end[5:7]),int(end[8:10])) 
+      delta = d2 - d1
+      days_range = []
+      for i in range(delta.days + 1):
+          append = d1 + timedelta(i)
+          append_start = str(append) + " " + start_h
+          append_end = str(append) + " " + end_h
+          days_range.append([append_start,append_end])
+      return days_range    
       
 new= KimaiLoader()
 auth = new.authentication()
 api_key=new.catch_api_key(auth)
 print(new.set_new_record(api_key))
-
-    
+# start = "2019-02-03"
+# end = "2019-02-10"
+# print(int(start[:4]))
+# print(start[5:7])
+# print(start[8:10])
+ 
 # payload={
 #   "method": "authenticate",
 #   "params": [
