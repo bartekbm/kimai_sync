@@ -8,7 +8,7 @@ class KimaiLoader:
       print("hello")
     
     def authentication(self):
-      name = "bartek"#input("Twoj login")
+      name = "bartek"#input("login")
       password = "wafel123"#input("Twoje haslo")
       params = [name,password]
       return self.api_payload('authenticate',params)
