@@ -5,3 +5,7 @@ kimailoader = KimaiLoader()
 xlsload = XlsLoad()
 xlshandler = XlsHandler()
 kimailoader,xlsload,xlshandler
+
+
+def tktinrer():
+    print("test")
