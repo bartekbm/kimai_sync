@@ -63,7 +63,8 @@ class KimaiLoader:
           append_start = str(append) + " " + start_h
           append_end = str(append) + " " + end_h
           days_range.append([append_start,append_end])
-      return days_range    
+      return days_range
+
       
 new= KimaiLoader()
 auth = new.authentication()

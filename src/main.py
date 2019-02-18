@@ -7,5 +7,3 @@ xlshandler = XlsHandler()
 kimailoader,xlsload,xlshandler
 
 
-def tktinrer():
-    print("test")
