@@ -7,9 +7,7 @@ class KimaiLoader:
     def __init__(self):
       print("hello")
     
-    def authentication(self):
-      name = "bartek"#input("login")
-      password = "wafel123"#input("Twoje haslo")
+    def authentication(self,name,password):
       params = [name,password]
       return self.api_payload('authenticate',params)
   
@@ -65,11 +63,17 @@ class KimaiLoader:
           days_range.append([append_start,append_end])
       return days_range
 
-      
-new= KimaiLoader()
-auth = new.authentication()
-api_key=new.catch_api_key(auth)
-print(new.set_new_record(api_key))
+#
+# new= KimaiLoader()
+# auth = new.authentication()
+# api_key=new.catch_api_key(auth)
+# print(new.set_new_record(api_key))
+
+
+
+
+
+
 # start = "2019-02-03"
 # end = "2019-02-10"
 # print(int(start[:4]))
