@@ -1,12 +1,24 @@
-from tkinter import *
+import tkinter as tk
 import tkinter.messagebox as tm
-from login_tkinter import LoginFrame
+from operations_tkinter import LoginFrame
 
+#
+# root = Tk()
+# lf = LoginFrame(root)
+# root.mainloop()
+class Mainframe(tk.Tk):
+    def __init__(self):
+        tk.Tk.__init__(self)
+        self.frame = LoginFrame(self)
+        self.frame.grid()
 
-root = Tk()
-lf = LoginFrame(root)
-root.mainloop()
+    def change(self, frame):
+        self.frame = frame(self)
+        self.frame.grid()  # make new frame
 
+if __name__ == "__main__":
+    app = Mainframe()
+    app.mainloop()
 
 # topFrame = Frame(root)
 # topFrame.pack()

@@ -34,16 +34,17 @@ class KimaiLoader:
       api_key=json_data['result']['items'][0]['apiKey']
       return api_key
     
-    def set_new_record(self,api_key):
-      working_hours_start = "07:00:00"#input ("Podaj o ktorej zaczynasz prace eg 07:00:00")
-      working_hours_end = "15:00:00"#input ("Podaj o ktorej konczysz prace eg 15:00:00")
-      start = "2019-02-02"#input(" Podaj date od ktorej zaczynasz zmiane eg 2019-02-02")
-      end = "2019-02-05"#input(" Podaj date koncowa eg 2019-02-05")
+    def set_new_record(self,api_key,start,end,working_hours_start,working_hours_end):
+      # working_hours_start = "07:00:00"#input ("Podaj o ktorej zaczynasz prace eg 07:00:00")
+      # working_hours_end = "15:00:00"#input ("Podaj o ktorej konczysz prace eg 15:00:00")
+      # start = "2019-02-02"#input(" Podaj date od ktorej zaczynasz zmiane eg 2019-02-02")
+      # end = "2019-02-05"#input(" Podaj date koncowa eg 2019-02-05")
       day_list = self.between_dates(start,end,working_hours_start,working_hours_end)
       data_to_api=[]
       a = 0
       while a != len(day_list):
         data = {"projectId":1,"taskId":2,"start":day_list[a][0],"end":day_list[a][1],"commentType":"","statusId":1}
+        print(data)
         data_to_api.append([data])
         a += 1
       b = 0
@@ -52,8 +53,12 @@ class KimaiLoader:
         print(self.api_payload('setTimesheetRecord',params))
         b += 1
     def between_dates(self,start,end,start_h, end_h):
+      if int(start_h[:2]) > int(end_h[:2]):
+          #data startowa np 2019-02-19 a data koncowa +1 czyli 2019-02-20
+          print("UTWORZYC PROCES ZMIANY NOCNEJ")
+
       d1 = date(int(start[:4]),int(start[5:7]),int(start[8:10]))
-      d2 = date(int(end[:4]),int(end[5:7]),int(end[8:10])) 
+      d2 = date(int(end[:4]),int(end[5:7]),int(end[8:10]))
       delta = d2 - d1
       days_range = []
       for i in range(delta.days + 1):
