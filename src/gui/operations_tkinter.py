@@ -49,6 +49,37 @@ class MainAppTk(tk.Frame):
         tk.Frame.__init__(self, master, **kwargs)
         master.title("Main application")
         master.geometry("400x200")
+        self.content(master)
+        menu=tk.Menu(master)
+        master.config(menu=menu)
+        filemenu = tk.Menu(menu)
+        menu.add_cascade(label="Operacje",menu=filemenu)
+        filemenu.add_command(label="Opcje",command=self.windows_options)
+        filemenu.add_command(label="Wyjdź", command=master.quit)
+        helpmenu = tk.Menu(menu)
+        menu.add_cascade(label="Help", menu=helpmenu)
+        # helpmenu.add_command(label="About...", command=About)
+
+    def _submit_btn_clicked(self):
+        start_day = self.input_start_day.get()
+        end_day = self.input_end_day.get()
+        start_hour = self.input_start_hour.get()
+        end_hour = self.input_end_hour.get()
+        new_records = KimaiLoader()
+        new_records.set_new_record(api_key,start_day,end_day,start_hour,end_hour)
+
+    def windows_options(self):
+        top = tk.Toplevel()
+        top.title("options")
+        ProjectList = tk.Listbox(top)
+        ProjectList.insert(1,"Projekt operatorzy")
+        ProjectList.insert(1, "Projekt inny")
+        ProjectList.insert(1, "Projekt cos tam")
+        ProjectList.pack()
+
+
+
+    def content(self,master):
         self.label_start_day = tk.Label(master, text="Data wprowadzenia początkowa", fg="black")
         self.label_start_hour = tk.Label(master, text="Godzina Wprowadzenia Początkowa", fg="black")
         self.input_start_day = tk.Entry(master)
@@ -67,11 +98,3 @@ class MainAppTk(tk.Frame):
         self.input_end_hour.grid(row=3, column=1)
         self.submit_button = tk.Button(master, text="Zapisz do KIMAI", command=self._submit_btn_clicked)
         self.submit_button.grid(row=4, column=0)
-
-    def _submit_btn_clicked(self):
-        start_day = self.input_start_day.get()
-        end_day = self.input_end_day.get()
-        start_hour = self.input_start_hour.get()
-        end_hour = self.input_end_hour.get()
-        new_records = KimaiLoader()
-        new_records.set_new_record(api_key,start_day,end_day,start_hour,end_hour)

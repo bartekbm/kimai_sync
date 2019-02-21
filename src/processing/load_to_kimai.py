@@ -8,6 +8,7 @@ class KimaiLoader:
       print("hello")
     
     def authentication(self,name,password):
+
       params = [name,password]
       return self.api_payload('authenticate',params)
   
@@ -35,10 +36,7 @@ class KimaiLoader:
       return api_key
     
     def set_new_record(self,api_key,start,end,working_hours_start,working_hours_end):
-      # working_hours_start = "07:00:00"#input ("Podaj o ktorej zaczynasz prace eg 07:00:00")
-      # working_hours_end = "15:00:00"#input ("Podaj o ktorej konczysz prace eg 15:00:00")
-      # start = "2019-02-02"#input(" Podaj date od ktorej zaczynasz zmiane eg 2019-02-02")
-      # end = "2019-02-05"#input(" Podaj date koncowa eg 2019-02-05")
+
       day_list = self.between_dates(start,end,working_hours_start,working_hours_end)
       data_to_api=[]
       a = 0
@@ -54,8 +52,18 @@ class KimaiLoader:
         b += 1
     def between_dates(self,start,end,start_h, end_h):
       if int(start_h[:2]) > int(end_h[:2]):
-          #data startowa np 2019-02-19 a data koncowa +1 czyli 2019-02-20
-          print("UTWORZYC PROCES ZMIANY NOCNEJ")
+          d1 = date(int(start[:4]), int(start[5:7]), int(start[8:10]))
+          d2 = date(int(end[:4]), int(end[5:7]), int(end[8:10]))
+          delta = d2 - d1
+          days_range = []
+          for i in range(delta.days + 1):
+              append = d1 + timedelta(i)
+              append_night= append + timedelta(days=1)
+              print("tu jestem " +  str(append_night))
+              append_start = str(append) + " " + start_h
+              append_end = str(append_night) + " " + end_h
+              days_range.append([append_start, append_end])
+          return days_range
 
       d1 = date(int(start[:4]),int(start[5:7]),int(start[8:10]))
       d2 = date(int(end[:4]),int(end[5:7]),int(end[8:10]))
@@ -70,10 +78,14 @@ class KimaiLoader:
 
 #
 # new= KimaiLoader()
-# auth = new.authentication()
+# auth = new.authentication(name= 'bartek',password = 'wafel123')
 # api_key=new.catch_api_key(auth)
-# print(new.set_new_record(api_key))
-
+# working_hours_start = "23:00:00"#input ("Podaj o ktorej zaczynasz prace eg 07:00:00")
+# working_hours_end = "07:00:00"#input ("Podaj o ktorej konczysz prace eg 15:00:00")
+# start = "2019-02-04"#input(" Podaj date od ktorej zaczynasz zmiane eg 2019-02-02")
+# end = "2019-02-04"#input(" Podaj date koncowa eg 2019-02-05")
+# print(new.set_new_record(api_key,start,end,working_hours_start,working_hours_end))
+#
 
 
 
