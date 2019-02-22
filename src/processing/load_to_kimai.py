@@ -35,6 +35,30 @@ class KimaiLoader:
       api_key=json_data['result']['items'][0]['apiKey']
       return api_key
     
+    def get_customer(self,api_key):
+        return self.api_payload('getCustomers',[api_key])
+
+    def get_project(self,api_key):
+        return self.api_payload('getProjects', [api_key])
+
+    def get_tasks(self,api_key):
+        return self.api_payload('getTasks', [api_key])
+
+    def catch_result(self,to_catch,tasks=None):
+        json_data = json.loads(to_catch)
+        catching= json_data['result']['items']
+        result = []
+        a=0
+        while a != len(catching):
+            if tasks =='yes':
+                id = json_data['result']['items'][a]['activityID']
+            else:
+                id = json_data['result']['items'][a]['customerID']
+            name = json_data['result']['items'][a]['name']
+            result.append([id,name])
+            a += 1
+        return result
+
     def set_new_record(self,api_key,start,end,working_hours_start,working_hours_end):
 
       day_list = self.between_dates(start,end,working_hours_start,working_hours_end)
@@ -59,7 +83,6 @@ class KimaiLoader:
           for i in range(delta.days + 1):
               append = d1 + timedelta(i)
               append_night= append + timedelta(days=1)
-              print("tu jestem " +  str(append_night))
               append_start = str(append) + " " + start_h
               append_end = str(append_night) + " " + end_h
               days_range.append([append_start, append_end])
@@ -80,6 +103,14 @@ class KimaiLoader:
 # new= KimaiLoader()
 # auth = new.authentication(name= 'bartek',password = 'wafel123')
 # api_key=new.catch_api_key(auth)
+# tasks=new.get_tasks(api_key)
+# customer=new.get_customer(api_key)
+# projects=new.get_project(api_key)
+# print(new.catch_result(tasks,'yes'))
+# print(new.catch_result(projects))
+# print(new.catch_result(customer))
+
+
 # working_hours_start = "23:00:00"#input ("Podaj o ktorej zaczynasz prace eg 07:00:00")
 # working_hours_end = "07:00:00"#input ("Podaj o ktorej konczysz prace eg 15:00:00")
 # start = "2019-02-04"#input(" Podaj date od ktorej zaczynasz zmiane eg 2019-02-02")

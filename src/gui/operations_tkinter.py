@@ -70,13 +70,76 @@ class MainAppTk(tk.Frame):
 
     def windows_options(self):
         top = tk.Toplevel()
+        top.geometry("200x300")
         top.title("options")
-        ProjectList = tk.Listbox(top)
-        ProjectList.insert(1,"Projekt operatorzy")
-        ProjectList.insert(1, "Projekt inny")
-        ProjectList.insert(1, "Projekt cos tam")
-        ProjectList.pack()
+        list = KimaiLoader()
 
+        frame_customer = tk.Frame(top)
+        frame_customer.pack()
+        frame_project = tk.Frame(top)
+        frame_project.pack()
+        frame_task = tk.Frame(top)
+        frame_task.pack()
+        tk.Label(frame_customer, text="Wybierz zespół domyślny").pack()
+        tk.Label(frame_customer, text="Aktualnie domyślny jest:").pack()
+        tk.Label(frame_project, text="Wybierz projekt domyślny").pack()
+        tk.Label(frame_project, text="Aktualnie domyślny jest").pack()
+        tk.Label(frame_task, text="Wybierz zadanie domyślne").pack()
+        tk.Label(frame_task, text="Aktualnie domyślny jest").pack()
+        CustomerList = tk.Listbox(frame_customer, width=30, height=3, font=("Helvetica", 8))
+        customer = list.get_customer(api_key)
+        customer_list = list.catch_result(customer)
+        a = 0
+        while a != len(customer_list):
+            CustomerList.insert(a, customer_list[a])
+            a += 1
+        scrollbar_customer = tk.Scrollbar(frame_customer, orient="vertical")
+        scrollbar_customer.config(command=CustomerList.yview)
+        scrollbar_customer.pack(side="right", fill="y")
+        CustomerList.config(yscrollcommand=scrollbar_customer.set)
+        CustomerList.pack()
+        def return_clicked_customer():
+            clicked_customer = CustomerList.curselection()
+            get=CustomerList.get(clicked_customer)
+            print(get)
+        button = tk.Button(frame_customer,text="zapisz",command=return_clicked_customer)
+        button.pack()
+        ProjectList = tk.Listbox(frame_project, width=30, height=3, font=("Helvetica", 8))
+        project=list.get_project(api_key)
+        project_list=list.catch_result(project)
+        a = 0
+        while a != len(project_list):
+            ProjectList.insert(a,project_list[a])
+            a+=1
+        scrollbar_project = tk.Scrollbar(frame_project, orient="vertical")
+        scrollbar_project.config(command=ProjectList.yview)
+        scrollbar_project.pack(side="right", fill="y")
+        ProjectList.config(yscrollcommand=scrollbar_project.set)
+        ProjectList.pack()
+        def return_clicked_project():
+            clicked_project = ProjectList.curselection()
+            get=ProjectList.get(clicked_project)
+            print(get)
+        button = tk.Button(frame_project,text="zapisz",command=return_clicked_project)
+        button.pack()
+        TasksList = tk.Listbox(frame_task, width=30, height=3, font=("Helvetica", 8))
+        tasks = list.get_tasks(api_key)
+        tasks_list = list.catch_result(tasks,'yes')
+        a = 0
+        while a != len(tasks_list):
+            TasksList.insert(a, tasks_list[a])
+            a += 1
+        scrollbar_task = tk.Scrollbar(frame_task, orient="vertical")
+        scrollbar_task.config(command=TasksList.yview)
+        scrollbar_task.pack(side="right", fill="y")
+        TasksList.config(yscrollcommand=scrollbar_task.set)
+        TasksList.pack()
+        def return_clicked_task():
+            clicked_task = TasksList.curselection()
+            get=TasksList.get(clicked_task)
+            print(get)
+        button = tk.Button(frame_task,text="zapisz",command=return_clicked_task)
+        button.pack()
 
 
     def content(self,master):
