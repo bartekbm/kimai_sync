@@ -1,6 +1,7 @@
 import requests
 import json
 from datetime import date, timedelta
+from src.config.configure import Configuration
 #walidacja daty
 class KimaiLoader:
     
@@ -65,7 +66,8 @@ class KimaiLoader:
       data_to_api=[]
       a = 0
       while a != len(day_list):
-        data = {"projectId":1,"taskId":2,"start":day_list[a][0],"end":day_list[a][1],"commentType":"","statusId":1}
+        conf = Configuration()
+        data = {"projectId":conf.readFromConfig()[0],"taskId":conf.readFromConfig()[1],"start":day_list[a][0],"end":day_list[a][1],"commentType":"","statusId":1}
         print(data)
         data_to_api.append([data])
         a += 1

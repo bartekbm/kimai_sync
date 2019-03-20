@@ -1,7 +1,8 @@
 import tkinter as tk
 import tkinter.messagebox as tm
 from src.processing.load_to_kimai import KimaiLoader
-
+from src.config.configure import Configuration
+conf = Configuration()
 
 class LoginFrame(tk.Frame):
     def __init__(self, master=None, **kwargs):
@@ -71,7 +72,7 @@ class MainAppTk(tk.Frame):
     def windows_options(self):
         top = tk.Toplevel()
         top.geometry("200x300")
-        top.title("options")
+        top.title("Options")
         list = KimaiLoader()
 
         frame_customer = tk.Frame(top)
@@ -119,7 +120,8 @@ class MainAppTk(tk.Frame):
         def return_clicked_project():
             clicked_project = ProjectList.curselection()
             get=ProjectList.get(clicked_project)
-            print(get)
+            p = get[0]
+            conf.saveToFile(p=str(p))
         button = tk.Button(frame_project,text="zapisz",command=return_clicked_project)
         button.pack()
         TasksList = tk.Listbox(frame_task, width=30, height=3, font=("Helvetica", 8))
@@ -137,7 +139,8 @@ class MainAppTk(tk.Frame):
         def return_clicked_task():
             clicked_task = TasksList.curselection()
             get=TasksList.get(clicked_task)
-            print(get)
+            print(get[0])
+            conf.saveToFile(None,t=str(get[0]))
         button = tk.Button(frame_task,text="zapisz",command=return_clicked_task)
         button.pack()
 
