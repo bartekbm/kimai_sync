@@ -3,6 +3,7 @@ import tkinter.messagebox as tm
 from src.processing.load_to_kimai import KimaiLoader
 from src.config.configure import Configuration
 conf = Configuration()
+from tkcalendar import Calendar, DateEntry
 
 class LoginFrame(tk.Frame):
     def __init__(self, master=None, **kwargs):
@@ -84,9 +85,9 @@ class MainAppTk(tk.Frame):
         tk.Label(frame_customer, text="Wybierz zespół domyślny").pack()
         tk.Label(frame_customer, text="Aktualnie domyślny jest:").pack()
         tk.Label(frame_project, text="Wybierz projekt domyślny").pack()
-        tk.Label(frame_project, text="Aktualnie domyślny jest").pack()
+        tk.Label(frame_project, text=f"Aktualnie domyślny jest {conf.readFromConfig()[2]}").pack()
         tk.Label(frame_task, text="Wybierz zadanie domyślne").pack()
-        tk.Label(frame_task, text="Aktualnie domyślny jest").pack()
+        tk.Label(frame_task, text=f"Aktualnie domyślny jest{conf.readFromConfig()[3]}").pack()
         CustomerList = tk.Listbox(frame_customer, width=30, height=3, font=("Helvetica", 8))
         customer = list.get_customer(api_key)
         customer_list = list.catch_result(customer)
@@ -121,7 +122,7 @@ class MainAppTk(tk.Frame):
             clicked_project = ProjectList.curselection()
             get=ProjectList.get(clicked_project)
             p = get[0]
-            conf.saveToFile(p=str(p))
+            conf.saveToFile(p=str(p),pn=get[1])
         button = tk.Button(frame_project,text="zapisz",command=return_clicked_project)
         button.pack()
         TasksList = tk.Listbox(frame_task, width=30, height=3, font=("Helvetica", 8))
@@ -140,10 +141,26 @@ class MainAppTk(tk.Frame):
             clicked_task = TasksList.curselection()
             get=TasksList.get(clicked_task)
             print(get[0])
-            conf.saveToFile(None,t=str(get[0]))
+            conf.saveToFile(None,t=str(get[0]),pn=None,tn=get[1])
         button = tk.Button(frame_task,text="zapisz",command=return_clicked_task)
         button.pack()
 
+
+    def gui_calendar(self):
+        def print_sel():
+            date= cal.selection_get()
+            date = date.strftime("%m/%d/%Y")
+            return date
+
+        top = tk.Toplevel(self.master)
+
+        cal = Calendar(top, font="Arial 14", selectmode='day', locale='en_US',
+                       cursor="hand1")
+
+        cal.pack(fill="both", expand=True)
+        while True:
+            tk.Button(top, text="ok", command=print_sel).pack()
+            return print_sel()
 
     def content(self,master):
         self.label_start_day = tk.Label(master, text="Data wprowadzenia początkowa", fg="black")
@@ -152,15 +169,20 @@ class MainAppTk(tk.Frame):
         self.input_start_hour = tk.Entry(master)
         self.label_end_day = tk.Label(master, text="Data wprowadzenia końcowa", fg="black")
         self.label_end_hour = tk.Label(master, text="Godzina Wprowadzenia końcowa", fg="black")
+        self.date_button = tk.Button(master, text='DateEntry', command=self.gui_calendar)
+        self.date_buttone = tk.Button(master, text='DateEntry', command=self.gui_calendar)
         self.input_end_day = tk.Entry(master)
         self.input_end_hour = tk.Entry(master)
         self.label_start_day.grid(row=0, column=0, sticky=tk.W)
         self.label_start_hour.grid(row=1, column=0, sticky=tk.W)
         self.input_start_day.grid(row=0, column=1)
+        self.date_button.grid(row=0, column=2)
+        self.input_start_day.insert(10,"test")
         self.input_start_hour.grid(row=1, column=1)
         self.label_end_day.grid(row=2, column=0, sticky=tk.W)
         self.label_end_hour.grid(row=3, column=0, sticky=tk.W)
         self.input_end_day.grid(row=2, column=1)
+        self.date_buttone.grid(row=2, column=2)
         self.input_end_hour.grid(row=3, column=1)
         self.submit_button = tk.Button(master, text="Zapisz do KIMAI", command=self._submit_btn_clicked)
         self.submit_button.grid(row=4, column=0)

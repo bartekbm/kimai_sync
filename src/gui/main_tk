@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.messagebox as tm
-from operations_tkinter import LoginFrame
-
+from src.gui.operations_tkinter import LoginFrame
+from src.config.configure import Configuration
 # root = Tk()
 # lf = LoginFrame(root)
 # root.mainloop()
@@ -16,6 +16,8 @@ class Mainframe(tk.Tk):
         self.frame.grid()  # make new frame
 
 if __name__ == "__main__":
+    check_cfg=Configuration()
+    check_cfg.checkRecoveryCfg()
     app = Mainframe()
     app.mainloop()
 
