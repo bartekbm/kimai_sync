@@ -50,7 +50,7 @@ class MainAppTk(tk.Frame):
     def __init__(self, master=None, **kwargs):
         tk.Frame.__init__(self, master, **kwargs)
         master.title("Main application")
-        master.geometry("400x200")
+        master.geometry("600x200")
         self.content(master)
         menu=tk.Menu(master)
         master.config(menu=menu)
@@ -75,7 +75,6 @@ class MainAppTk(tk.Frame):
         top.geometry("200x300")
         top.title("Options")
         list = KimaiLoader()
-
         frame_customer = tk.Frame(top)
         frame_customer.pack()
         frame_project = tk.Frame(top)
@@ -146,11 +145,13 @@ class MainAppTk(tk.Frame):
         button.pack()
 
 
-    def gui_calendar(self):
+    def gui_calendar_start(self):
         def print_sel():
-            date= cal.selection_get()
-            date = date.strftime("%m/%d/%Y")
-            return date
+            date_clicked= cal.selection_get()
+            date_clicked = date_clicked.strftime("%Y-%m-%d")
+            self.input_start_day.delete(0, 10)
+            self.input_start_day.insert(10,date_clicked)
+
 
         top = tk.Toplevel(self.master)
 
@@ -158,27 +159,49 @@ class MainAppTk(tk.Frame):
                        cursor="hand1")
 
         cal.pack(fill="both", expand=True)
-        while True:
-            tk.Button(top, text="ok", command=print_sel).pack()
-            return print_sel()
+        tk.Button(top, text="ok", command=lambda: print_sel()).pack()
+
+    def gui_calendar_end(self):
+        def print_sel():
+            date_clicked= cal.selection_get()
+            date_clicked = date_clicked.strftime("%Y-%m-%d")
+            self.input_end_day.delete(0, 10)
+            self.input_end_day.insert(10,date_clicked)
+
+
+        top = tk.Toplevel(self.master)
+
+        cal = Calendar(top, font="Arial 14", selectmode='day', locale='en_US',
+                       cursor="hand1")
+
+        cal.pack(fill="both", expand=True)
+        tk.Button(top, text="ok", command=lambda: print_sel()).pack()
 
     def content(self,master):
+        # self.frame_chose_hours = tk.Frame(master)
+        # self.frame_chose_hours.pack()
+        # self.chours_label=tk.Label(self.frame_chose_hours, text="Wybierz godziny").pack()
+        # self.hours_list = tk.Listbox(self.frame_chose_hours, width=30, height=3, font=("Helvetica", 8))
+        self.hours_label = tk.Label(master, text="Zmiana")
+        self.hours_list = tk.Listbox(master, width=30, height=3, font=("Helvetica", 8))
         self.label_start_day = tk.Label(master, text="Data wprowadzenia początkowa", fg="black")
         self.label_start_hour = tk.Label(master, text="Godzina Wprowadzenia Początkowa", fg="black")
         self.input_start_day = tk.Entry(master)
         self.input_start_hour = tk.Entry(master)
         self.label_end_day = tk.Label(master, text="Data wprowadzenia końcowa", fg="black")
         self.label_end_hour = tk.Label(master, text="Godzina Wprowadzenia końcowa", fg="black")
-        self.date_button = tk.Button(master, text='DateEntry', command=self.gui_calendar)
-        self.date_buttone = tk.Button(master, text='DateEntry', command=self.gui_calendar)
+        self.date_button = tk.Button(master, text='DateEntry', command=self.gui_calendar_start)
+        self.date_buttone = tk.Button(master, text='DateEntry', command=self.gui_calendar_end)
+
         self.input_end_day = tk.Entry(master)
         self.input_end_hour = tk.Entry(master)
         self.label_start_day.grid(row=0, column=0, sticky=tk.W)
         self.label_start_hour.grid(row=1, column=0, sticky=tk.W)
         self.input_start_day.grid(row=0, column=1)
         self.date_button.grid(row=0, column=2)
-        self.input_start_day.insert(10,"test")
         self.input_start_hour.grid(row=1, column=1)
+        self.hours_label.grid(row=1, column=2)
+        self.hours_list.grid(row=1, column=3)
         self.label_end_day.grid(row=2, column=0, sticky=tk.W)
         self.label_end_hour.grid(row=3, column=0, sticky=tk.W)
         self.input_end_day.grid(row=2, column=1)
