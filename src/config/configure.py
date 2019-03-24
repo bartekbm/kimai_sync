@@ -1,6 +1,6 @@
 from configparser import ConfigParser
 from pathlib import Path
-file_cfg = Path('C:/Users/bartosz/OneDrive/programowanie/private_projects_python/kimai_xls_sync/src/config/cfg.ini')
+file_cfg = Path('/Users/bartosz_bodziony/Documents/nauka/python/flask/kimai_xls_sync/src/config/cfg.ini')
 
 # parser.read('cfg.ini')
 # test_pars = parser.get('project_value','projectId')
@@ -23,6 +23,7 @@ class Configuration:
         task_name=self.parser.get('project_name','task')
         value_list = [project_value,task_value,project_name,task_name]
         return value_list
+        #return dict
 
     def saveToFile(self,p=None,t=None,pn=None,tn=None):
         self.parser.read(file_cfg)

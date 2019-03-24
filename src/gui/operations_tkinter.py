@@ -50,7 +50,7 @@ class MainAppTk(tk.Frame):
     def __init__(self, master=None, **kwargs):
         tk.Frame.__init__(self, master, **kwargs)
         master.title("Main application")
-        master.geometry("600x200")
+        master.geometry("500x350")
         self.content(master)
         menu=tk.Menu(master)
         master.config(menu=menu)
@@ -177,35 +177,60 @@ class MainAppTk(tk.Frame):
         cal.pack(fill="both", expand=True)
         tk.Button(top, text="ok", command=lambda: print_sel()).pack()
 
+    def onSelect(self, val):
+
+        sender = val.widget
+        idx = sender.curselection()
+        value = sender.get(idx)
+
+        self.var.set(value)
+        self.input_start_hour.delete(0, tk.END)
+        self.input_start_hour.insert(10, value)
+        self.input_end_hour.delete(0, tk.END)
+        self.input_end_hour.insert(10, value)
+
+
     def content(self,master):
-        # self.frame_chose_hours = tk.Frame(master)
-        # self.frame_chose_hours.pack()
-        # self.chours_label=tk.Label(self.frame_chose_hours, text="Wybierz godziny").pack()
-        # self.hours_list = tk.Listbox(self.frame_chose_hours, width=30, height=3, font=("Helvetica", 8))
-        self.hours_label = tk.Label(master, text="Zmiana")
-        self.hours_list = tk.Listbox(master, width=30, height=3, font=("Helvetica", 8))
-        self.label_start_day = tk.Label(master, text="Data wprowadzenia początkowa", fg="black")
-        self.label_start_hour = tk.Label(master, text="Godzina Wprowadzenia Początkowa", fg="black")
+
+        #cnames = 'a'
+
+        acts = ['zmiana a', 'zmiana b',
+                'zmiana c', 'zmiana cc', 'zmiana w']
+
+        lb = tk.Listbox(self)
+
+        for i in acts:
+            lb.insert(tk.END, i)
+
+        lb.bind("<<ListboxSelect>>", self.onSelect)
+
+        lb.pack(pady=15)
+
+        self.var = tk.StringVar()
+        self.label = tk.Label(self, text=0, textvariable=self.var)
+        self.label.pack()
+
+        label_start_day = tk.Label(master, text="Data wprowadzenia początkowa", fg="black")
+        label_start_hour = tk.Label(master, text="Godzina Wprowadzenia Początkowa", fg="black")
         self.input_start_day = tk.Entry(master)
         self.input_start_hour = tk.Entry(master)
-        self.label_end_day = tk.Label(master, text="Data wprowadzenia końcowa", fg="black")
-        self.label_end_hour = tk.Label(master, text="Godzina Wprowadzenia końcowa", fg="black")
-        self.date_button = tk.Button(master, text='DateEntry', command=self.gui_calendar_start)
-        self.date_buttone = tk.Button(master, text='DateEntry', command=self.gui_calendar_end)
+        label_end_day = tk.Label(master, text="Data wprowadzenia końcowa", fg="black")
+        label_end_hour = tk.Label(master, text="Godzina Wprowadzenia końcowa", fg="black")
+        date_button = tk.Button(master, text='Data', command=self.gui_calendar_start)
+        date_buttone = tk.Button(master, text='Data', command=self.gui_calendar_end)
 
         self.input_end_day = tk.Entry(master)
         self.input_end_hour = tk.Entry(master)
-        self.label_start_day.grid(row=0, column=0, sticky=tk.W)
-        self.label_start_hour.grid(row=1, column=0, sticky=tk.W)
+        label_start_day.grid(row=0, column=0, sticky=tk.W)
+        label_start_hour.grid(row=1, column=0, sticky=tk.W)
         self.input_start_day.grid(row=0, column=1)
-        self.date_button.grid(row=0, column=2)
+        date_button.grid(row=0, column=2)
         self.input_start_hour.grid(row=1, column=1)
-        self.hours_label.grid(row=1, column=2)
-        self.hours_list.grid(row=1, column=3)
-        self.label_end_day.grid(row=2, column=0, sticky=tk.W)
-        self.label_end_hour.grid(row=3, column=0, sticky=tk.W)
+        #lbox.grid(column=3, row=0, rowspan=5, sticky=tk.W)
+        label_end_day.grid(row=2, column=0, sticky=tk.W)
+        label_end_hour.grid(row=3, column=0, sticky=tk.W)
         self.input_end_day.grid(row=2, column=1)
-        self.date_buttone.grid(row=2, column=2)
+        date_buttone.grid(row=2, column=2)
         self.input_end_hour.grid(row=3, column=1)
-        self.submit_button = tk.Button(master, text="Zapisz do KIMAI", command=self._submit_btn_clicked)
-        self.submit_button.grid(row=4, column=0)
+        submit_button = tk.Button(master, text="Zapisz do KIMAI", command=self._submit_btn_clicked)
+        submit_button.grid(row=4, column=0)
