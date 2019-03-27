@@ -72,39 +72,62 @@ class MainAppTk(tk.Frame):
 
     def windows_options(self):
         top = tk.Toplevel()
-        top.geometry("200x300")
+        top.geometry("500x500")
         top.title("Options")
         list = KimaiLoader()
-        frame_customer = tk.Frame(top)
-        frame_customer.pack()
+        # frame_customer = tk.Frame(top)
+        # frame_customer.pack()
+
         frame_project = tk.Frame(top)
         frame_project.pack()
         frame_task = tk.Frame(top)
         frame_task.pack()
-        tk.Label(frame_customer, text="Wybierz zespół domyślny").pack()
-        tk.Label(frame_customer, text="Aktualnie domyślny jest:").pack()
+        hours_project = tk.Frame(top)
+        hours_project.pack()
+        # tk.Label(frame_customer, text="Wybierz zespół domyślny").pack()
+        # tk.Label(frame_customer, text="Aktualnie domyślny jest:").pack()
         tk.Label(frame_project, text="Wybierz projekt domyślny").pack()
-        tk.Label(frame_project, text=f"Aktualnie domyślny jest {conf.readFromConfig()[2]}").pack()
+        tk.Label(frame_project, text=f"Aktualnie domyślny jest {conf.readFromConfig()['project_name']}").pack()
         tk.Label(frame_task, text="Wybierz zadanie domyślne").pack()
-        tk.Label(frame_task, text=f"Aktualnie domyślny jest{conf.readFromConfig()[3]}").pack()
-        CustomerList = tk.Listbox(frame_customer, width=30, height=3, font=("Helvetica", 8))
-        customer = list.get_customer(api_key)
-        customer_list = list.catch_result(customer)
-        a = 0
-        while a != len(customer_list):
-            CustomerList.insert(a, customer_list[a])
-            a += 1
-        scrollbar_customer = tk.Scrollbar(frame_customer, orient="vertical")
-        scrollbar_customer.config(command=CustomerList.yview)
-        scrollbar_customer.pack(side="right", fill="y")
-        CustomerList.config(yscrollcommand=scrollbar_customer.set)
-        CustomerList.pack()
-        def return_clicked_customer():
-            clicked_customer = CustomerList.curselection()
-            get=CustomerList.get(clicked_customer)
-            print(get)
-        button = tk.Button(frame_customer,text="zapisz",command=return_clicked_customer)
-        button.pack()
+        tk.Label(frame_task, text=f"Aktualnie domyślny jest{conf.readFromConfig()['task_name']}").pack()
+        label_hours_a = tk.Label(hours_project, text=f'Zmiana A, jest od {conf.readFromConfig()["shift_a"][0]} do {conf.readFromConfig()["shift_a"][1]}, zmień na: ', fg="black")
+        label_hours_a_between = tk.Label(hours_project,text=f'do',fg="black")
+        label_hours_b = tk.Label(hours_project, text=f'Zmiana B, jest od {conf.readFromConfig()["shift_b"][0]} do {conf.readFromConfig()["shift_b"][1]}, zmień na: ', fg="black")
+        label_hours_c = tk.Label(hours_project, text=f'Zmiana C, jest od {conf.readFromConfig()["shift_c"][0]} do {conf.readFromConfig()["shift_c"][1]}, zmień na: ', fg="black")
+        label_hours_cc = tk.Label(hours_project, text=f'Zmiana CC, jest od {conf.readFromConfig()["shift_cc"][0]} do {conf.readFromConfig()["shift_cc"][1]}, zmień na: ', fg="black")
+        label_hours_w = tk.Label(hours_project, text=f'Zmiana W, jest od {conf.readFromConfig()["shift_w"][0]} do {conf.readFromConfig()["shift_w"][1]}, zmień na: ', fg="black")
+        label_hours_random = tk.Label(hours_project, text=f'Zmiana do wprowadzenia, jest od {conf.readFromConfig()["shift_random"][0]} do {conf.readFromConfig()["shift_random"][1]}, zmień na: ', fg="black")
+        input_hours_a_start = tk.Entry(hours_project,width = 6)
+        input_hours_a_end = tk.Entry(hours_project,width = 6)
+        label_hours_a.grid(row=0, column=0, sticky=tk.W)
+        input_hours_a_start.grid(row=0, column=1)
+        label_hours_a_between.grid(row=0,column=2)
+        input_hours_a_end.grid(row=0, column=3)
+        label_hours_b.grid(row=1, column=0, sticky=tk.W)
+        label_hours_c.grid(row=2, column=0, sticky=tk.W)
+        label_hours_cc.grid(row=3, column=0, sticky=tk.W)
+        label_hours_w.grid(row=4, column=0, sticky=tk.W)
+        label_hours_random.grid(row=5, column=0, sticky=tk.W)
+        def saveInputHours():
+            pass
+        # CustomerList = tk.Listbox(frame_customer, width=30, height=3, font=("Helvetica", 8))
+        # customer = list.get_customer(api_key)
+        # customer_list = list.catch_result(customer)
+        # a = 0
+        # while a != len(customer_list):
+        #     CustomerList.insert(a, customer_list[a])
+        #     a += 1
+        # scrollbar_customer = tk.Scrollbar(frame_customer, orient="vertical")
+        # scrollbar_customer.config(command=CustomerList.yview)
+        # scrollbar_customer.pack(side="right", fill="y")
+        # CustomerList.config(yscrollcommand=scrollbar_customer.set)
+        # CustomerList.pack()
+        # def return_clicked_customer():
+        #     clicked_customer = CustomerList.curselection()
+        #     get=CustomerList.get(clicked_customer)
+        #     print(get)
+        # button = tk.Button(frame_customer,text="zapisz",command=return_clicked_customer)
+        # button.pack()
         ProjectList = tk.Listbox(frame_project, width=30, height=3, font=("Helvetica", 8))
         project=list.get_project(api_key)
         project_list=list.catch_result(project)
@@ -184,10 +207,31 @@ class MainAppTk(tk.Frame):
         value = sender.get(idx)
 
         self.var.set(value)
+        if value == 'zmiana a':
+            value_s = conf.readFromConfig()['shift_a'][0]
+            value_e = conf.readFromConfig()['shift_a'][1]
+        elif value == 'zmiana b':
+            value_s = conf.readFromConfig()['shift_b'][0]
+            value_e = conf.readFromConfig()['shift_b'][1]
+        elif value == 'zmiana c':
+            value_s = conf.readFromConfig()['shift_c'][0]
+            value_e = conf.readFromConfig()['shift_c'][1]
+        elif value == 'zmiana cc':
+            value_s = conf.readFromConfig()['shift_cc'][0]
+            value_e = conf.readFromConfig()['shift_cc'][1]
+        elif value == 'zmiana w':
+            value_s = conf.readFromConfig()['shift_w'][0]
+            value_e = conf.readFromConfig()['shift_w'][1]
+        elif value == 'zmiana do ustawienia':
+            value_s = conf.readFromConfig()['shift_random'][0]
+            value_e = conf.readFromConfig()['shift_random'][1]
+        else:
+            value_s =""
+            value_e=""
         self.input_start_hour.delete(0, tk.END)
-        self.input_start_hour.insert(10, value)
+        self.input_start_hour.insert(10, value_s)
         self.input_end_hour.delete(0, tk.END)
-        self.input_end_hour.insert(10, value)
+        self.input_end_hour.insert(10, value_e)
 
 
     def content(self,master):
@@ -195,7 +239,7 @@ class MainAppTk(tk.Frame):
         #cnames = 'a'
 
         acts = ['zmiana a', 'zmiana b',
-                'zmiana c', 'zmiana cc', 'zmiana w']
+                'zmiana c', 'zmiana cc', 'zmiana w','zmiana do ustawienia']
 
         lb = tk.Listbox(self)
 
