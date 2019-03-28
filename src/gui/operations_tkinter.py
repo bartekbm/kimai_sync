@@ -70,6 +70,8 @@ class MainAppTk(tk.Frame):
         new_records = KimaiLoader()
         new_records.set_new_record(api_key,start_day,end_day,start_hour,end_hour)
 
+
+
     def windows_options(self):
         top = tk.Toplevel()
         top.geometry("500x500")
@@ -77,7 +79,25 @@ class MainAppTk(tk.Frame):
         list = KimaiLoader()
         # frame_customer = tk.Frame(top)
         # frame_customer.pack()
-
+        def saveInputHours():
+            a = f"{input_hours_a_start.get()},{input_hours_a_end.get()}"
+            if a !=(','):
+                conf.saveToFile(shift_a=a)
+            b = f"{input_hours_b_start.get()},{input_hours_b_end.get()}"
+            if b !=(','):
+                conf.saveToFile(shift_b=b)
+            c = f"{input_hours_c_start.get()},{input_hours_c_end.get()}"
+            if c !=(','):
+                conf.saveToFile(shift_c=c)
+            cc = f"{input_hours_cc_start.get()},{input_hours_cc_end.get()}"
+            if cc !=(','):
+                conf.saveToFile(shift_cc=cc)
+            w = f"{input_hours_w_start.get()},{input_hours_w_end.get()}"
+            if w !=(','):
+                conf.saveToFile(shift_w=w)
+            random = f"{input_hours_random_start.get()},{input_hours_random_end.get()}"
+            if random !=(','):
+                conf.saveToFile(shift_random=random)
         frame_project = tk.Frame(top)
         frame_project.pack()
         frame_task = tk.Frame(top)
@@ -91,25 +111,65 @@ class MainAppTk(tk.Frame):
         tk.Label(frame_task, text="Wybierz zadanie domyślne").pack()
         tk.Label(frame_task, text=f"Aktualnie domyślny jest{conf.readFromConfig()['task_name']}").pack()
         label_hours_a = tk.Label(hours_project, text=f'Zmiana A, jest od {conf.readFromConfig()["shift_a"][0]} do {conf.readFromConfig()["shift_a"][1]}, zmień na: ', fg="black")
-        label_hours_a_between = tk.Label(hours_project,text=f'do',fg="black")
+        label_hours_between_a = tk.Label(hours_project,text=f'do',fg="black")
+        label_hours_between_b = tk.Label(hours_project, text=f'do', fg="black")
+        label_hours_between_c = tk.Label(hours_project, text=f'do', fg="black")
+        label_hours_between_cc = tk.Label(hours_project, text=f'do', fg="black")
+        label_hours_between_w = tk.Label(hours_project, text=f'do', fg="black")
+        label_hours_between_random = tk.Label(hours_project, text=f'do', fg="black")
         label_hours_b = tk.Label(hours_project, text=f'Zmiana B, jest od {conf.readFromConfig()["shift_b"][0]} do {conf.readFromConfig()["shift_b"][1]}, zmień na: ', fg="black")
         label_hours_c = tk.Label(hours_project, text=f'Zmiana C, jest od {conf.readFromConfig()["shift_c"][0]} do {conf.readFromConfig()["shift_c"][1]}, zmień na: ', fg="black")
         label_hours_cc = tk.Label(hours_project, text=f'Zmiana CC, jest od {conf.readFromConfig()["shift_cc"][0]} do {conf.readFromConfig()["shift_cc"][1]}, zmień na: ', fg="black")
         label_hours_w = tk.Label(hours_project, text=f'Zmiana W, jest od {conf.readFromConfig()["shift_w"][0]} do {conf.readFromConfig()["shift_w"][1]}, zmień na: ', fg="black")
         label_hours_random = tk.Label(hours_project, text=f'Zmiana do wprowadzenia, jest od {conf.readFromConfig()["shift_random"][0]} do {conf.readFromConfig()["shift_random"][1]}, zmień na: ', fg="black")
+
         input_hours_a_start = tk.Entry(hours_project,width = 6)
         input_hours_a_end = tk.Entry(hours_project,width = 6)
+        input_hours_b_start = tk.Entry(hours_project, width=6)
+        input_hours_b_end = tk.Entry(hours_project, width=6)
+        input_hours_c_start = tk.Entry(hours_project, width=6)
+        input_hours_c_end = tk.Entry(hours_project, width=6)
+        input_hours_cc_start = tk.Entry(hours_project, width=6)
+        input_hours_cc_end = tk.Entry(hours_project, width=6)
+        input_hours_w_start = tk.Entry(hours_project, width=6)
+        input_hours_w_end = tk.Entry(hours_project, width=6)
+        input_hours_random_start = tk.Entry(hours_project, width=6)
+        input_hours_random_end = tk.Entry(hours_project, width=6)
+
+        submit_button = tk.Button(hours_project, text="Zapisz do KIMAI", command=saveInputHours)
         label_hours_a.grid(row=0, column=0, sticky=tk.W)
         input_hours_a_start.grid(row=0, column=1)
-        label_hours_a_between.grid(row=0,column=2)
+        label_hours_between_a.grid(row=0,column=2)
         input_hours_a_end.grid(row=0, column=3)
+
         label_hours_b.grid(row=1, column=0, sticky=tk.W)
+        input_hours_b_start.grid(row=1, column=1)
+        label_hours_between_b.grid(row=1, column=2)
+        input_hours_b_end.grid(row=1, column=3)
+
         label_hours_c.grid(row=2, column=0, sticky=tk.W)
+        input_hours_c_start.grid(row=2, column=1)
+        label_hours_between_c.grid(row=2, column=2)
+        input_hours_c_end.grid(row=2, column=3)
+
         label_hours_cc.grid(row=3, column=0, sticky=tk.W)
+        input_hours_cc_start.grid(row=3, column=1)
+        label_hours_between_cc.grid(row=3, column=2)
+        input_hours_cc_end.grid(row=3, column=3)
+
         label_hours_w.grid(row=4, column=0, sticky=tk.W)
+        input_hours_w_start.grid(row=4, column=1)
+        label_hours_between_w.grid(row=4, column=2)
+        input_hours_w_end.grid(row=4, column=3)
+
         label_hours_random.grid(row=5, column=0, sticky=tk.W)
-        def saveInputHours():
-            pass
+        input_hours_random_start.grid(row=5, column=1)
+        label_hours_between_random.grid(row=5, column=2)
+        input_hours_random_end.grid(row=5, column=3)
+
+        submit_button.grid(row=6, column=0)
+
+
         # CustomerList = tk.Listbox(frame_customer, width=30, height=3, font=("Helvetica", 8))
         # customer = list.get_customer(api_key)
         # customer_list = list.catch_result(customer)
@@ -144,7 +204,7 @@ class MainAppTk(tk.Frame):
             clicked_project = ProjectList.curselection()
             get=ProjectList.get(clicked_project)
             p = get[0]
-            conf.saveToFile(p=str(p),pn=get[1])
+            conf.saveToFile(project_value=str(p),project_name=get[1])
         button = tk.Button(frame_project,text="zapisz",command=return_clicked_project)
         button.pack()
         TasksList = tk.Listbox(frame_task, width=30, height=3, font=("Helvetica", 8))
@@ -162,8 +222,7 @@ class MainAppTk(tk.Frame):
         def return_clicked_task():
             clicked_task = TasksList.curselection()
             get=TasksList.get(clicked_task)
-            print(get[0])
-            conf.saveToFile(None,t=str(get[0]),pn=None,tn=get[1])
+            conf.saveToFile(taskId_value=str(get[0]),taskId_name=get[1])
         button = tk.Button(frame_task,text="zapisz",command=return_clicked_task)
         button.pack()
 

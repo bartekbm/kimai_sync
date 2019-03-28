@@ -40,21 +40,37 @@ class Configuration:
             "shift_random": shift_random
         }
         return value_list
-        #return dict
 
-    def saveToFile(self,p=None,t=None,pn=None,tn=None):
+    def saveToFile(self,**kwargs):
         self.parser.read(file_cfg)
-        if p !=None:
-            self.parser['project_value']['projectId'] = p
-        if t !=None:
-            self.parser['project_value']['taskId'] = t
-        if pn !=None:
-            self.parser['project_name']['project'] = pn
-        if tn !=None:
-            self.parser['project_name']['task'] = tn
+        for key, value in kwargs.items():
+            if key == 'project_value':
+                self.parser['project_value']['projectId'] = value
+            elif key == 'taskId_value':
+                self.parser['project_value']['taskId'] = value
+            elif key == 'project_name':
+                self.parser['project_name']['project'] = value
+            elif key == 'taskId_name':
+                self.parser['project_name']['task'] = value
+            elif key == 'shift_a':
+                self.parser.set('hours','a',value=value)
+            elif key == 'shift_b':
+                self.parser.set('hours','b',value=value)
+            elif key == 'shift_c':
+                self.parser.set('hours','c',value=value)
+            elif key == 'shift_cc':
+                self.parser.set('hours','cc',value=value)
+            elif key == 'shift_w':
+                self.parser.set('hours','w',value=value)
+            elif key == 'shift_random':
+                self.parser.set('hours','random',value=value)
+
+
 
         with open(file_cfg, 'w') as configfile:
             self.parser.write(configfile)
+
+
     def checkRecoveryCfg(self):
         cfg_recovery = ''';
         [project_value]
@@ -66,15 +82,12 @@ class Configuration:
         task = !!!_OP-opieka na dziecko
         
         [hours]
-        a= ["7:00","15:00"]
-        b_start=15:00
-        b_end=23:00
-        c_start=23:00
-        c_end=07:00
-        cc_start=19:00
-        cc_end=07:00
-        w_start=07:00
-        w_end=19:00
+        a = 7:00,15:00
+        b = 15:00,23:00
+        c = 23:00,07:00
+        cc = 19:00,07:00
+        w = 07:00,19:00
+        random = 06:00,23:00
         
         [user]
         username = bartek
