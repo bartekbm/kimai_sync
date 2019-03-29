@@ -7,19 +7,23 @@ from src.config.configure import Configuration
 # root.mainloop()
 class Mainframe(tk.Tk):
     def __init__(self):
+        print("tu jestem")
         tk.Tk.__init__(self)
         self.frame = LoginFrame(self)
         self.frame.grid()
+
 
     def change(self, frame):
         self.frame = frame(self)
         self.frame.grid()  # make new frame
 
-if __name__ == "__main__":
-    check_cfg=Configuration()
-    check_cfg.checkRecoveryCfg()
-    app = Mainframe()
-    app.mainloop()
+def run():
+    #if __name__ == "__main__":
+        print("tu jestem")
+        check_cfg=Configuration()
+        check_cfg.checkRecoveryCfg()
+        app = Mainframe()
+        app.mainloop()
 
 # topFrame = Frame(root)
 # topFrame.pack()
