@@ -67,7 +67,7 @@ class KimaiLoader:
       a = 0
       while a != len(day_list):
         conf = Configuration()
-        data = {"projectId":conf.readFromConfig()['task_value'],"taskId":conf.readFromConfig()['procject_value'],"start":day_list[a][0],"end":day_list[a][1],"commentType":"","statusId":1}
+        data = {"projectId":conf.readFromConfig()['procject_value'],"taskId":conf.readFromConfig()['task_value'],"start":day_list[a][0],"end":day_list[a][1],"commentType":"","statusId":1,"location":"","comment":"","description":"","trackingNumber":"","budget":"","billable":"","approved":"","cleared":""}
         print(data)
         data_to_api.append([data])
         a += 1

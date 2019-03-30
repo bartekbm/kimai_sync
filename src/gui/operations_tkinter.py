@@ -3,7 +3,8 @@ import tkinter.messagebox as tm
 from src.processing.load_to_kimai import KimaiLoader
 from src.config.configure import Configuration
 conf = Configuration()
-from tkcalendar import Calendar, DateEntry
+from tkcalendar import Calendar
+
 
 class LoginFrame(tk.Frame):
     def __init__(self, master=None, **kwargs):
