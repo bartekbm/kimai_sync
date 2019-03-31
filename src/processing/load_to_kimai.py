@@ -2,6 +2,8 @@ import requests
 import json
 from datetime import date, timedelta
 from src.config.configure import Configuration
+import requests_kerberos
+from requests_kerberos import HTTPKerberosAuth
 #walidacja daty
 class KimaiLoader:
     
@@ -27,8 +29,8 @@ class KimaiLoader:
       return self.request(dump)
       
     def request(self,dump):
-      web = 'http://192.168.0.164/kimai/core/json.php'
-      r = requests.post(web,data=dump)
+      web = 'https://kimai.creditagricole/core/json.php'
+      r = requests.post(web, data=dump,auth=HTTPKerberosAuth(),verify=False)
       return r.content
     
     def catch_api_key(self,string):
@@ -100,7 +102,8 @@ class KimaiLoader:
           append_end = str(append) + " " + end_h
           days_range.append([append_start,append_end])
       return days_range
-
+test=requests_kerberos.__version__
+print(test)
 #
 # new= KimaiLoader()
 # auth = new.authentication(name= 'bartek',password = 'wafel123')

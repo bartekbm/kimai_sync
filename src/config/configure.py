@@ -1,7 +1,18 @@
 from configparser import ConfigParser
 from pathlib import Path
-file_cfg = Path('C:/Users/bartosz/OneDrive/programowanie/private_projects_python/kimai_xls_sync/src/config/cfg.ini')
+import os
+absFilePath = os.path.abspath(__file__)
+fileDir = os.path.dirname(os.path.abspath(__file__))
+parentDir = os.path.dirname(fileDir)
+parentDirLvlDown = os.path.dirname(parentDir)
 
+file_cfg_path = os.path.join(parentDirLvlDown, 'cfg.ini')
+
+file_cfg = Path(file_cfg_path)
+
+print(file_cfg)
+
+# print(filename)
 # parser.read('cfg.ini')
 # test_pars = parser.get('project_value','projectId')
 # print(test_pars)
@@ -72,7 +83,7 @@ class Configuration:
 
 
     def checkRecoveryCfg(self):
-        cfg_recovery = ''';
+        cfg_recovery = '''
         [project_value]
         projectid = 2
         taskid = 4
@@ -95,7 +106,7 @@ class Configuration:
 
         if file_cfg.is_file() == False:
             with open(
-                    'C:/Users/bartosz/OneDrive/programowanie/private_projects_python/kimai_xls_sync/src/config/cfg.ini',
+                    file_cfg,
                     'w') as f:
                 f.write(cfg_recovery)
 
