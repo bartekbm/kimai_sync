@@ -2,7 +2,7 @@ import requests
 import json
 from datetime import date, timedelta
 from src.config.configure import Configuration
-from requests_kerberos import HTTPKerberosAuth
+
 
 #walidacja daty
 class KimaiLoader:
@@ -16,6 +16,7 @@ class KimaiLoader:
       return self.api_payload('authenticate',params)
   
     def api_payload(self,method,params):
+      print(params)
       payload={
         "method": method,
         "params": params,
@@ -29,9 +30,9 @@ class KimaiLoader:
       return self.request(dump)
       
     def request(self,dump):
-      web = 'https://kimai.creditagricole/core/json.php'
-      r = requests.post(web, data=dump,auth=HTTPKerberosAuth(),verify=False)
-      return r.content
+        web = 'http://192.168.0.164/kimai/core/json.php'
+        r = requests.post(web, data=dump)
+        return r.content
     
     def catch_api_key(self,string):
       json_data = json.loads(string)
@@ -42,24 +43,62 @@ class KimaiLoader:
         return self.api_payload('getCustomers',[api_key])
 
     def get_project(self,api_key):
-        return self.api_payload('getProjects', [api_key])
+        return self.api_payload('getProjects', [api_key,'includeTasks'])
 
-    def get_tasks(self,api_key):
-        return self.api_payload('getTasks', [api_key])
+    # def get_tasks(self,api_key):
+    #     return self.api_payload('getTasks', [api_key])
 
     def catch_result(self,to_catch,tasks=None):
         json_data = json.loads(to_catch)
         catching= json_data['result']['items']
+        print(f"drukuje to co bedzie parsowane {catching}")
+        print(len(catching))
         result = []
         a=0
         while a != len(catching):
-            if tasks =='yes':
-                id = json_data['result']['items'][a]['activityID']
-            else:
-                id = json_data['result']['items'][a]['customerID']
-            name = json_data['result']['items'][a]['name']
-            result.append([id,name])
+            project_id = catching[a].get('projectID')
+            project_name = catching[a].get('name')
+            customer_name=catching[a].get('customerName')
+            tasks=catching[a].get('tasks')
+            i=0
+            while i != (len(tasks)):
+                print(tasks[i].get('name'),tasks[i].get('activityID'))
+                i +=1
+            print(project_id, project_name, customer_name)
             a += 1
+            # project_name= [catching][1][0]['name']
+            # print(project_name)
+            # customer_name= [catching][1][0]['customerName']
+            # print(customer_name)
+            # tasks = [catching][1][0]['tasks']
+            # print(tasks)
+        # print(catching)
+        # print(len(catching))
+        #while a != len(catching):
+            # if tasks =='yes':
+            #     id = json_data['result']['items'][a]['activityID']
+            #     #print(f"drukuje id taska {id}")
+            # else:
+            #     id = json_data['result']['items'][a]['customerID']
+            #     #print(f"drukuje id taska {id}")
+            # name = json_data['result']['items'][a]['name']
+            # name_customer = json_data['result']['items'][a]['customerName']
+            #name_id_tasks = json_data['result']['items'][a]['tasks'][a]['activityID']
+            # print(len(name_id_tasks))
+            # name_tasks = json_data['result']['items'][a]['tasks'][a]['name']
+            # print(f"Jestem 1 projekem, name {name}, customer to:, {name_customer}, task id {name_id_tasks}, nazwa {name_tasks}")
+            # result.append([id,name])
+            # #f"drukuje wynik cały {result}"
+            # print(catching)
+            # print(len(catching))
+            # print(a)
+            # a += 1
+            # print(len(name_id_tasks))
+            # i =0
+            # while i != len(name_id_tasks):
+            #     print(name_id_tasks)
+            #     i += i
+
         return result
 
     def set_new_record(self,api_key,start,end,working_hours_start,working_hours_end):
