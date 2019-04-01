@@ -39,8 +39,8 @@ class KimaiLoader:
       api_key=json_data['result']['items'][0]['apiKey']
       return api_key
     
-    def get_customer(self,api_key):
-        return self.api_payload('getCustomers',[api_key])
+    # def get_customer(self,api_key):
+    #     return self.api_payload('getCustomers',[api_key])
 
     def get_project(self,api_key):
         return self.api_payload('getProjects', [api_key,'includeTasks'])
@@ -51,20 +51,32 @@ class KimaiLoader:
     def catch_result(self,to_catch,tasks=None):
         json_data = json.loads(to_catch)
         catching= json_data['result']['items']
-        print(f"drukuje to co bedzie parsowane {catching}")
-        print(len(catching))
+        #print(f"drukuje to co bedzie parsowane {catching}")
+        #print(len(catching))
         result = []
+        tasks_list=[]
+        print(catching)
         a=0
         while a != len(catching):
             project_id = catching[a].get('projectID')
             project_name = catching[a].get('name')
             customer_name=catching[a].get('customerName')
+            project_name=f"{project_name} ({customer_name})"
             tasks=catching[a].get('tasks')
+
             i=0
             while i != (len(tasks)):
-                print(tasks[i].get('name'),tasks[i].get('activityID'))
+                name=tasks[i].get('name')
+                id=tasks[i].get('activityID')
+                tasks_list.append({"name":name,"id":id})
+
                 i +=1
-            print(project_id, project_name, customer_name)
+            #print(project_id, project_name, customer_name,tasks_list)
+            #result.append([project_id, project_name + (f" ({customer_name}) ",tasks_list)])
+            result.append({'project_id':project_id,'project_name':project_name,'tasks_list':tasks_list})
+
+            tasks_list=[]
+            #print(result)
             a += 1
             # project_name= [catching][1][0]['name']
             # print(project_name)
@@ -99,6 +111,7 @@ class KimaiLoader:
             #     print(name_id_tasks)
             #     i += i
 
+        print(result)
         return result
 
     def set_new_record(self,api_key,start,end,working_hours_start,working_hours_end):

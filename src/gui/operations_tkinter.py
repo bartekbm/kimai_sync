@@ -191,12 +191,19 @@ class MainAppTk(tk.Frame):
         #     print(get)
         # button = tk.Button(frame_customer,text="zapisz",command=return_clicked_customer)
         # button.pack()
+        def insertTasks(tasks_list):
+            a = 0
+            while a != len(tasks_list):
+                insert=(tasks_list[a].get('id')),tasks_list[a].get('name')
+                TasksList.insert(a, insert)
+                a += 1
         ProjectList = tk.Listbox(frame_project, width=30, height=3, font=("Helvetica", 8))
         project=list.get_project(api_key)
         project_list=list.catch_result(project)
         a = 0
         while a != len(project_list):
-            ProjectList.insert(a,project_list[a])
+            insert=(project_list[a].get('project_id')),project_list[a].get('project_name')
+            ProjectList.insert(a,insert)
             a+=1
         scrollbar_project = tk.Scrollbar(frame_project, orient="vertical")
         scrollbar_project.config(command=ProjectList.yview)
@@ -206,26 +213,30 @@ class MainAppTk(tk.Frame):
         def return_clicked_project():
             clicked_project = ProjectList.curselection()
             get=ProjectList.get(clicked_project)
+            i =0
+            n = False
+            while n !=True:
+                if get[1] == project_list[i].get('project_name'):
+                    list=(project_list[i].get('tasks_list'))
+                    insertTasks(list)
+                    n = True
+                else:
+                    i+=1
             p = get[0]
             conf.saveToFile(project_value=str(p),project_name=get[1])
         button = tk.Button(frame_project,text="zapisz",command=return_clicked_project)
         button.grid(row=2,column=2,sticky=tk.W)
         TasksList = tk.Listbox(frame_task, width=30, height=3, font=("Helvetica", 8))
-        tasks = list.get_tasks(api_key)
-        tasks_list = list.catch_result(tasks,'yes')
-        a = 0
-        while a != len(tasks_list):
-            TasksList.insert(a, tasks_list[a])
-            a += 1
+
         scrollbar_task = tk.Scrollbar(frame_task, orient="vertical")
         scrollbar_task.config(command=TasksList.yview)
         scrollbar_task.grid(row=2,column=1,sticky=tk.W)
         TasksList.config(yscrollcommand=scrollbar_task.set)
         TasksList.grid(row=2,column=0,sticky=tk.W)
         def return_clicked_task():
-            clicked_task = TasksList.curselection()
-            get=TasksList.get(clicked_task)
-            conf.saveToFile(taskId_value=str(get[0]),taskId_name=get[1])
+             clicked_task = TasksList.curselection()
+             get=TasksList.get(clicked_task)
+             conf.saveToFile(taskId_value=str(get[0]),taskId_name=get[1])
         button = tk.Button(frame_task,text="zapisz",command=return_clicked_task)
         button.grid(row=2,column=2,sticky=tk.W)
 
