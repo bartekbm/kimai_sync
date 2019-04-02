@@ -74,14 +74,22 @@ class MainAppTk(tk.Frame):
             second_date=datetime.datetime.strptime(second,"%Y-%m-%d")
         except ValueError:
             tm.showerror("DATE ERROR", "Zły format daty, powinnien być RRRR-MM-DD")
+            return False
         if second_date < first_date:
             tm.showerror("DATE ERROR", f"DATA OD {first} powinna być większa niż DO {second}")
             self.input_end_day.delete(0, 10)
         try:
             datetime.datetime.strptime(start_h, "%H:%M")
+        except ValueError:
+            tm.showerror("TIME ERROR", "Zły format godzin, powinnien być HH:MM")
+            self.input_start_hour.delete(0, 10)
+            return False
+        try:
             datetime.datetime.strptime(end_h, "%H:%M")
         except ValueError:
             tm.showerror("TIME ERROR", "Zły format godzin, powinnien być HH:MM")
+            self.input_end_hour.delete(0,10)
+            return False
 
 
     def _submit_btn_clicked(self):
@@ -89,9 +97,11 @@ class MainAppTk(tk.Frame):
         end_day = self.input_end_day.get()
         start_hour = self.input_start_hour.get()
         end_hour = self.input_end_hour.get()
-        self.firstSecondDateTimeValidation(start_day,end_day,start_hour,end_hour)
-        new_records = KimaiLoader()
-        new_records.set_new_record(api_key,start_day,end_day,start_hour,end_hour)
+        if self.firstSecondDateTimeValidation(start_day,end_day,start_hour,end_hour) == False:
+            pass
+        else:
+            new_records = KimaiLoader()
+            new_records.set_new_record(api_key,start_day,end_day,start_hour,end_hour)
 
 
 
@@ -123,6 +133,7 @@ class MainAppTk(tk.Frame):
             random = f"{input_hours_random_start.get()},{input_hours_random_end.get()}"
             if random !=(','):
                 conf.saveToFile(shift_random=random)
+
         frame_project = tk.Frame(top)
         frame_project.pack(side=tk.TOP,anchor="w")
         frame_task = tk.Frame(top)
@@ -249,6 +260,7 @@ class MainAppTk(tk.Frame):
             p = get[0]
             conf.saveToFile(project_value=str(p),project_name=get[1])
             conf.saveToFile(taskId_value="", taskId_name="")
+            tm.showinfo("Information","Zapisano, zadania wyzerowane, zapisz zadanie")
         button = tk.Button(frame_project,text="zapisz",command=return_clicked_project)
         button.grid(row=2,column=2,sticky=tk.W)
         TasksList = tk.Listbox(frame_task, width=30, height=3, font=("Helvetica", 8))
@@ -262,6 +274,8 @@ class MainAppTk(tk.Frame):
              clicked_task = TasksList.curselection()
              get=TasksList.get(clicked_task)
              conf.saveToFile(taskId_value=str(get[0]),taskId_name=get[1])
+             tm.showinfo("Information", "Zapisano")
+
         button = tk.Button(frame_task,text="zapisz",command=return_clicked_task)
         button.grid(row=2,column=2,sticky=tk.W)
 
@@ -272,6 +286,7 @@ class MainAppTk(tk.Frame):
             date_clicked = date_clicked.strftime("%Y-%m-%d")
             self.input_start_day.delete(0, 10)
             self.input_start_day.insert(10,date_clicked)
+            top.destroy()
 
 
         top = tk.Toplevel(self.master)
@@ -288,6 +303,7 @@ class MainAppTk(tk.Frame):
             date_clicked = date_clicked.strftime("%Y-%m-%d")
             self.input_end_day.delete(0, 10)
             self.input_end_day.insert(10,date_clicked)
+            top.destroy()
 
 
         top = tk.Toplevel(self.master)

@@ -97,7 +97,7 @@ class Configuration:
         username = bartek
         
         [web]
-        site = 'http://192.168.0.164/kimai/core/json.php'
+        site = http://192.168.0.164/kimai/core/json.php
         '''
 
         if file_cfg.is_file() == False:
