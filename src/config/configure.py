@@ -10,16 +10,6 @@ file_cfg_path = os.path.join(parentDirLvlDown, 'cfg.ini')
 
 file_cfg = Path(file_cfg_path)
 
-print(file_cfg)
-
-# print(filename)
-# parser.read('cfg.ini')
-# test_pars = parser.get('project_value','projectId')
-# print(test_pars)
-# parser['project_value']['projectId'] = '90328490832098429083492348902348'
-# with open('cfg.ini', 'w') as configfile:    # save
-#     parser.write(configfile)
-
 
 class Configuration:
     parser = ConfigParser()
@@ -38,6 +28,7 @@ class Configuration:
         shift_cc = self.parser.get('hours', 'cc').split(',')
         shift_w= self.parser.get('hours', 'w').split(',')
         shift_random = self.parser.get('hours', 'random').split(',')
+        web=self.parser.get('web','site')
         value_list = {
             "procject_value":project_value,
             "task_value":task_value,
@@ -48,7 +39,9 @@ class Configuration:
             "shift_c": shift_c,
             "shift_cc": shift_cc,
             "shift_w": shift_w,
-            "shift_random": shift_random
+            "shift_random": shift_random,
+            "website":web,
+            "cfg":file_cfg
         }
         return value_list
 
@@ -102,6 +95,9 @@ class Configuration:
         
         [user]
         username = bartek
+        
+        [web]
+        site = 'http://192.168.0.164/kimai/core/json.php'
         '''
 
         if file_cfg.is_file() == False:

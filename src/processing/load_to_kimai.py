@@ -2,6 +2,8 @@ import requests
 import json
 from datetime import date, timedelta
 from src.config.configure import Configuration
+#import src.errors.kimai_errors as site
+#from requests_kerberos import HTTPKerberosAuth
 
 
 #walidacja daty
@@ -30,8 +32,15 @@ class KimaiLoader:
       return self.request(dump)
       
     def request(self,dump):
-        web = 'http://192.168.0.164/kimai/core/json.php'
-        r = requests.post(web, data=dump)
+        webConf=Configuration()
+        website=webConf.readFromConfig()['website']
+        #web = 'https://kimai.creditagricole/core/json.php'
+        try:
+            r = requests.post(website, data=dump)
+        except requests.exceptions.MissingSchema:
+            r=""
+            return r
+
         return r.content
     
     def catch_api_key(self,string):

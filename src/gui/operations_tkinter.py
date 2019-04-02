@@ -3,6 +3,7 @@ import tkinter.messagebox as tm
 from src.processing.load_to_kimai import KimaiLoader
 from src.config.configure import Configuration
 conf = Configuration()
+import datetime
 from tkcalendar import Calendar
 
 
@@ -40,7 +41,11 @@ class LoginFrame(tk.Frame):
             api_key = new.catch_api_key(auth)
 
         except KeyError:
-            tm.showerror("window","zly login albo haslo")
+            tm.showerror("LOGIN ERROR","Błąd logowania, sprawdź czy zmieniłeś hasło w kimai")
+        except ValueError:
+            cfg=conf.readFromConfig()['cfg']
+            tm.showerror("WEB ERROR", f"Błąd parsowania strony kimai, sprawdź czy zgadza się strona z {cfg}")
+
         else:
             for widget in self.master.winfo_children():
                 widget.grid_remove()
@@ -63,11 +68,28 @@ class MainAppTk(tk.Frame):
         menu.add_cascade(label="Help", menu=helpmenu)
         # helpmenu.add_command(label="About...", command=About)
 
+    def firstSecondDateTimeValidation(self,first,second,start_h,end_h):
+        try:
+            first_date=datetime.datetime.strptime(first,"%Y-%m-%d")
+            second_date=datetime.datetime.strptime(second,"%Y-%m-%d")
+        except ValueError:
+            tm.showerror("DATE ERROR", "Zły format daty, powinnien być RRRR-MM-DD")
+        if second_date < first_date:
+            tm.showerror("DATE ERROR", f"DATA OD {first} powinna być większa niż DO {second}")
+            self.input_end_day.delete(0, 10)
+        try:
+            datetime.datetime.strptime(start_h, "%H:%M")
+            datetime.datetime.strptime(end_h, "%H:%M")
+        except ValueError:
+            tm.showerror("TIME ERROR", "Zły format godzin, powinnien być HH:MM")
+
+
     def _submit_btn_clicked(self):
         start_day = self.input_start_day.get()
         end_day = self.input_end_day.get()
         start_hour = self.input_start_hour.get()
         end_hour = self.input_end_hour.get()
+        self.firstSecondDateTimeValidation(start_day,end_day,start_hour,end_hour)
         new_records = KimaiLoader()
         new_records.set_new_record(api_key,start_day,end_day,start_hour,end_hour)
 
@@ -193,8 +215,10 @@ class MainAppTk(tk.Frame):
         # button.pack()
         def insertTasks(tasks_list):
             a = 0
+            TasksList.delete(0, tk.END)
             while a != len(tasks_list):
                 insert=(tasks_list[a].get('id')),tasks_list[a].get('name')
+
                 TasksList.insert(a, insert)
                 a += 1
         ProjectList = tk.Listbox(frame_project, width=30, height=3, font=("Helvetica", 8))
@@ -224,6 +248,7 @@ class MainAppTk(tk.Frame):
                     i+=1
             p = get[0]
             conf.saveToFile(project_value=str(p),project_name=get[1])
+            conf.saveToFile(taskId_value="", taskId_name="")
         button = tk.Button(frame_project,text="zapisz",command=return_clicked_project)
         button.grid(row=2,column=2,sticky=tk.W)
         TasksList = tk.Listbox(frame_task, width=30, height=3, font=("Helvetica", 8))
