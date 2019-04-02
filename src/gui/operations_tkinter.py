@@ -133,6 +133,8 @@ class MainAppTk(tk.Frame):
             random = f"{input_hours_random_start.get()},{input_hours_random_end.get()}"
             if random !=(','):
                 conf.saveToFile(shift_random=random)
+            if (a or b or c or cc or w or random) != (',') :
+                tm.showinfo("Information", "Zapisano")
 
         frame_project = tk.Frame(top)
         frame_project.pack(side=tk.TOP,anchor="w")
@@ -392,3 +394,7 @@ class MainAppTk(tk.Frame):
         self.input_end_hour.grid(row=3, column=1)
         submit_button = tk.Button(master, text="Zapisz do KIMAI", command=self._submit_btn_clicked)
         submit_button.grid(row=4,column=2,pady=20)
+        tk.Label(master, text=f"Ustawiony projekt: {conf.readFromConfig()['project_name']}").grid(row=5, column=0,
+                                                                                                     sticky=tk.W)
+        tk.Label(master, text=f"Domyślny jest: {conf.readFromConfig()['task_name']}").grid(row=6, column=0,
+                                                                                               sticky=tk.W)
