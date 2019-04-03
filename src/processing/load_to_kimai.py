@@ -10,15 +10,16 @@ from src.config.configure import Configuration
 class KimaiLoader:
     
     def __init__(self):
-      print("hello")
-    
+        """itam"""
+
+    def __repr__(self):
+        return str(self.requests_list)
     def authentication(self,name,password):
 
       params = [name,password]
       return self.api_payload('authenticate',params)
   
     def api_payload(self,method,params):
-      print(params)
       payload={
         "method": method,
         "params": params,
@@ -30,6 +31,9 @@ class KimaiLoader:
     def json_dump(self,payload):
       dump = json.dumps(payload)
       return self.request(dump)
+    requests_list=[]
+    def returned_requests(self,*text):
+        self.requests_list.append(text)
       
     def request(self,dump):
         webConf=Configuration()
@@ -40,31 +44,25 @@ class KimaiLoader:
         except requests.exceptions.MissingSchema:
             r=""
             return r
-
+        self.requests_list = []
+        self.returned_requests(r.content)
         return r.content
-    
+
     def catch_api_key(self,string):
       json_data = json.loads(string)
       api_key=json_data['result']['items'][0]['apiKey']
       return api_key
     
-    # def get_customer(self,api_key):
-    #     return self.api_payload('getCustomers',[api_key])
 
     def get_project(self,api_key):
         return self.api_payload('getProjects', [api_key,'includeTasks'])
 
-    # def get_tasks(self,api_key):
-    #     return self.api_payload('getTasks', [api_key])
 
     def catch_result(self,to_catch,tasks=None):
         json_data = json.loads(to_catch)
         catching= json_data['result']['items']
-        #print(f"drukuje to co bedzie parsowane {catching}")
-        #print(len(catching))
         result = []
         tasks_list=[]
-        print(catching)
         a=0
         while a != len(catching):
             project_id = catching[a].get('projectID')
@@ -80,46 +78,12 @@ class KimaiLoader:
                 tasks_list.append({"name":name,"id":id})
 
                 i +=1
-            #print(project_id, project_name, customer_name,tasks_list)
-            #result.append([project_id, project_name + (f" ({customer_name}) ",tasks_list)])
             result.append({'project_id':project_id,'project_name':project_name,'tasks_list':tasks_list})
 
             tasks_list=[]
-            #print(result)
             a += 1
-            # project_name= [catching][1][0]['name']
-            # print(project_name)
-            # customer_name= [catching][1][0]['customerName']
-            # print(customer_name)
-            # tasks = [catching][1][0]['tasks']
-            # print(tasks)
-        # print(catching)
-        # print(len(catching))
-        #while a != len(catching):
-            # if tasks =='yes':
-            #     id = json_data['result']['items'][a]['activityID']
-            #     #print(f"drukuje id taska {id}")
-            # else:
-            #     id = json_data['result']['items'][a]['customerID']
-            #     #print(f"drukuje id taska {id}")
-            # name = json_data['result']['items'][a]['name']
-            # name_customer = json_data['result']['items'][a]['customerName']
-            #name_id_tasks = json_data['result']['items'][a]['tasks'][a]['activityID']
-            # print(len(name_id_tasks))
-            # name_tasks = json_data['result']['items'][a]['tasks'][a]['name']
-            # print(f"Jestem 1 projekem, name {name}, customer to:, {name_customer}, task id {name_id_tasks}, nazwa {name_tasks}")
-            # result.append([id,name])
-            # #f"drukuje wynik cały {result}"
-            # print(catching)
-            # print(len(catching))
-            # print(a)
-            # a += 1
-            # print(len(name_id_tasks))
-            # i =0
-            # while i != len(name_id_tasks):
-            #     print(name_id_tasks)
-            #     i += i
 
+        print("result")
         print(result)
         return result
 
@@ -131,13 +95,13 @@ class KimaiLoader:
       while a != len(day_list):
         conf = Configuration()
         data = {"projectId":conf.readFromConfig()['procject_value'],"taskId":conf.readFromConfig()['task_value'],"start":day_list[a][0],"end":day_list[a][1],"commentType":"","statusId":1,"location":"","comment":"","description":"","trackingNumber":"","budget":"","billable":"","approved":"","cleared":""}
-        print(data)
+
         data_to_api.append([data])
         a += 1
       b = 0
       while b != len(data_to_api):
         params = [api_key,data_to_api[b][0]]
-        print(self.api_payload('setTimesheetRecord',params))
+        self.api_payload('setTimesheetRecord',params)
         b += 1
     def between_dates(self,start,end,start_h, end_h):
       if int(start_h[:2]) > int(end_h[:2]):

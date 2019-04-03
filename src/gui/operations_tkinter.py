@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.messagebox as tm
 from src.processing.load_to_kimai import KimaiLoader
 from src.config.configure import Configuration
+import tkinter.scrolledtext as tkst
 conf = Configuration()
 import datetime
 from tkcalendar import Calendar
@@ -29,7 +30,6 @@ class LoginFrame(tk.Frame):
         self.login_button.grid(row=1, column=2)
 
     def _login_btn_clicked(self):
-        # print("Clicked")
         username = self.input_name.get()
         password = self.input_password.get()
 
@@ -66,7 +66,6 @@ class MainAppTk(tk.Frame):
         filemenu.add_command(label="Wyjdź", command=master.quit)
         helpmenu = tk.Menu(menu)
         menu.add_cascade(label="Help", menu=helpmenu)
-        # helpmenu.add_command(label="About...", command=About)
 
     def firstSecondDateTimeValidation(self,first,second,start_h,end_h):
         try:
@@ -100,9 +99,12 @@ class MainAppTk(tk.Frame):
         if self.firstSecondDateTimeValidation(start_day,end_day,start_hour,end_hour) == False:
             pass
         else:
+
             new_records = KimaiLoader()
             new_records.set_new_record(api_key,start_day,end_day,start_hour,end_hour)
-
+        print(new_records)
+        #self.box.delete(0,10)
+        self.box.insert(tk.INSERT,new_records)
 
 
     def windows_options(self):
@@ -110,10 +112,10 @@ class MainAppTk(tk.Frame):
         top.geometry("450x400")
         top.title("Opcje")
         list = KimaiLoader()
+        projectName_v = tk.StringVar()
+        taskName_v = tk.StringVar()
 
 
-        # frame_customer = tk.Frame(top)
-        # frame_customer.pack()
         def saveInputHours():
             a = f"{input_hours_a_start.get()},{input_hours_a_end.get()}"
             if a !=(','):
@@ -142,12 +144,12 @@ class MainAppTk(tk.Frame):
         frame_task.pack(side=tk.TOP,anchor="w")
         hours_project = tk.Frame(top)
         hours_project.pack(side=tk.LEFT)
-        # tk.Label(frame_customer, text="Wybierz zespół domyślny").pack()
-        # tk.Label(frame_customer, text="Aktualnie domyślny jest:").pack()
         tk.Label(frame_project, text="Wybierz projekt domyślny").grid(row=1,column=0,sticky=tk.W)
-        tk.Label(frame_project, text=f"Domyślny jest: {conf.readFromConfig()['project_name']}").grid(row=0,column=2,sticky=tk.W)
+        projectName_v.set(f"Aktualnie projekt to: {conf.readFromConfig()['project_name']}")
+        #taskName_v.set(f"Aktualnie zadanie to: {conf.readFromConfig()['task_name']}")
+        tk.Label(frame_project, textvariable=projectName_v).grid(row=0,column=2,sticky=tk.W)
         tk.Label(frame_task, text="Wybierz zadanie domyślne").grid(row=1,column=0,sticky=tk.W)
-        tk.Label(frame_task, text=f"Domyślny jest: {conf.readFromConfig()['task_name']}").grid(row=0,column=2,sticky=tk.W,pady=10)
+        tk.Label(frame_task, textvariable=taskName_v).grid(row=0,column=2,sticky=tk.W,pady=10)
         label_hours_a = tk.Label(hours_project, text=f'A, jest od {conf.readFromConfig()["shift_a"][0]} do {conf.readFromConfig()["shift_a"][1]}, zmień na: ', fg="black")
         label_hours_between_a = tk.Label(hours_project,text=f'do',fg="black")
         label_hours_between_b = tk.Label(hours_project, text=f'do', fg="black")
@@ -207,25 +209,6 @@ class MainAppTk(tk.Frame):
 
         submit_button.grid(row=6, column=0)
 
-
-        # CustomerList = tk.Listbox(frame_customer, width=30, height=3, font=("Helvetica", 8))
-        # customer = list.get_customer(api_key)
-        # customer_list = list.catch_result(customer)
-        # a = 0
-        # while a != len(customer_list):
-        #     CustomerList.insert(a, customer_list[a])
-        #     a += 1
-        # scrollbar_customer = tk.Scrollbar(frame_customer, orient="vertical")
-        # scrollbar_customer.config(command=CustomerList.yview)
-        # scrollbar_customer.pack(side="right", fill="y")
-        # CustomerList.config(yscrollcommand=scrollbar_customer.set)
-        # CustomerList.pack()
-        # def return_clicked_customer():
-        #     clicked_customer = CustomerList.curselection()
-        #     get=CustomerList.get(clicked_customer)
-        #     print(get)
-        # button = tk.Button(frame_customer,text="zapisz",command=return_clicked_customer)
-        # button.pack()
         def insertTasks(tasks_list):
             a = 0
             TasksList.delete(0, tk.END)
@@ -263,6 +246,8 @@ class MainAppTk(tk.Frame):
             conf.saveToFile(project_value=str(p),project_name=get[1])
             conf.saveToFile(taskId_value="", taskId_name="")
             tm.showinfo("Information","Zapisano, zadania wyzerowane, zapisz zadanie")
+
+            projectName_v.set(f"Aktualnie projekt to: {get[1]}")
         button = tk.Button(frame_project,text="zapisz",command=return_clicked_project)
         button.grid(row=2,column=2,sticky=tk.W)
         TasksList = tk.Listbox(frame_task, width=30, height=3, font=("Helvetica", 8))
@@ -277,6 +262,7 @@ class MainAppTk(tk.Frame):
              get=TasksList.get(clicked_task)
              conf.saveToFile(taskId_value=str(get[0]),taskId_name=get[1])
              tm.showinfo("Information", "Zapisano")
+             taskName_v.set(f"Aktualnie zadanie to: {get[1]}")
 
         button = tk.Button(frame_task,text="zapisz",command=return_clicked_task)
         button.grid(row=2,column=2,sticky=tk.W)
@@ -352,8 +338,6 @@ class MainAppTk(tk.Frame):
 
     def content(self,master):
 
-        #cnames = 'a'
-
         acts = ['zmiana a', 'zmiana b',
                 'zmiana c', 'zmiana cc', 'zmiana w','własna']
 
@@ -364,7 +348,6 @@ class MainAppTk(tk.Frame):
 
         lb.bind("<<ListboxSelect>>", self.onSelect)
 
-        #master.columnconfigure(0, weight=3)
         lb.grid(row=0,column=3,columnspan=1, rowspan=3,pady=5,padx=5)
 
         self.var = tk.StringVar()
@@ -386,15 +369,15 @@ class MainAppTk(tk.Frame):
         self.input_start_day.grid(row=0, column=1)
         date_button.grid(row=0, column=2,padx=5)
         self.input_start_hour.grid(row=1, column=1)
-        #lbox.grid(column=3, row=0, rowspan=5, sticky=tk.W)
         label_end_day.grid(row=2, column=0, sticky=tk.W)
         label_end_hour.grid(row=3, column=0, sticky=tk.W)
         self.input_end_day.grid(row=2, column=1)
         date_buttone.grid(row=2, column=2,padx=5)
         self.input_end_hour.grid(row=3, column=1)
         submit_button = tk.Button(master, text="Zapisz do KIMAI", command=self._submit_btn_clicked)
-        submit_button.grid(row=4,column=2,pady=20)
-        tk.Label(master, text=f"Ustawiony projekt: {conf.readFromConfig()['project_name']}").grid(row=5, column=0,
-                                                                                                     sticky=tk.W)
-        tk.Label(master, text=f"Domyślny jest: {conf.readFromConfig()['task_name']}").grid(row=6, column=0,
-                                                                                               sticky=tk.W)
+        submit_button.grid(row=4,column=2,pady=10)
+
+        self.box = tkst.ScrolledText(master,width  = 50,height = 5)
+        self.box.grid(row=5, column=0,columnspan=13, rowspan=13)
+
+        tk.Label(master, text=f"Projekt: {conf.readFromConfig()['task_name']}").grid(row=4, column=3,sticky=tk.W)
