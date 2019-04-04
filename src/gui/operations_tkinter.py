@@ -56,7 +56,7 @@ class MainAppTk(tk.Frame):
     def __init__(self, master=None, **kwargs):
         tk.Frame.__init__(self, master, **kwargs)
         master.title("Main application")
-        master.geometry("370x200")
+        master.geometry("570x300")
         self.content(master)
         menu=tk.Menu(master)
         master.config(menu=menu)
@@ -102,9 +102,10 @@ class MainAppTk(tk.Frame):
 
             new_records = KimaiLoader()
             new_records.set_new_record(api_key,start_day,end_day,start_hour,end_hour)
-        print(new_records)
-        #self.box.delete(0,10)
-        self.box.insert(tk.INSERT,new_records)
+        self.box.delete("0.0", tk.END)
+        self.box.insert(tk.INSERT,new_records.read_requests_list())
+        new_records.clear_requests_list()
+
 
 
     def windows_options(self):
@@ -377,7 +378,7 @@ class MainAppTk(tk.Frame):
         submit_button = tk.Button(master, text="Zapisz do KIMAI", command=self._submit_btn_clicked)
         submit_button.grid(row=4,column=2,pady=10)
 
-        self.box = tkst.ScrolledText(master,width  = 50,height = 5)
-        self.box.grid(row=5, column=0,columnspan=13, rowspan=13)
-
-        tk.Label(master, text=f"Projekt: {conf.readFromConfig()['task_name']}").grid(row=4, column=3,sticky=tk.W)
+        self.box = tkst.ScrolledText(master,width  = 70,height = 5)
+        self.box.grid(row=6, column=0,columnspan=13, rowspan=13)
+        tk.Label(master, text=f"Projekt: {conf.readFromConfig()['project_name']}").grid(row=4, column=3, sticky=tk.W)
+        tk.Label(master, text=f"Zadanie: {conf.readFromConfig()['task_name']}").grid(row=5, column=3,sticky=tk.W)

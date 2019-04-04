@@ -2,18 +2,13 @@ import requests
 import json
 from datetime import date, timedelta
 from src.config.configure import Configuration
-#import src.errors.kimai_errors as site
-#from requests_kerberos import HTTPKerberosAuth
 
 
-#walidacja daty
 class KimaiLoader:
     
     def __init__(self):
         """itam"""
 
-    def __repr__(self):
-        return str(self.requests_list)
     def authentication(self,name,password):
 
       params = [name,password]
@@ -31,10 +26,29 @@ class KimaiLoader:
     def json_dump(self,payload):
       dump = json.dumps(payload)
       return self.request(dump)
+
     requests_list=[]
+
     def returned_requests(self,*text):
+        #self.parse_list(text)
         self.requests_list.append(text)
-      
+
+    def read_requests_list(self):
+        #self.parse_list()
+        return self.requests_list
+
+    def parse_list(self,text):
+        #text = json.dumps(text)
+
+        text = json.dumps(text)
+        json_data = json.loads(text)
+        print(type(json_data))
+        #json_data = json.loads(str(self.requests_list[0]))
+        #print(json_data)
+    def clear_requests_list(self):
+
+        self.requests_list.clear()
+
     def request(self,dump):
         webConf=Configuration()
         website=webConf.readFromConfig()['website']
@@ -44,7 +58,7 @@ class KimaiLoader:
         except requests.exceptions.MissingSchema:
             r=""
             return r
-        self.requests_list = []
+
         self.returned_requests(r.content)
         return r.content
 
@@ -127,56 +141,4 @@ class KimaiLoader:
           append_end = str(append) + " " + end_h
           days_range.append([append_start,append_end])
       return days_range
-
-#
-# new= KimaiLoader()
-# auth = new.authentication(name= 'bartek',password = 'wafel123')
-# api_key=new.catch_api_key(auth)
-# tasks=new.get_tasks(api_key)
-# customer=new.get_customer(api_key)
-# projects=new.get_project(api_key)
-# print(new.catch_result(tasks,'yes'))
-# print(new.catch_result(projects))
-# print(new.catch_result(customer))
-
-
-# working_hours_start = "23:00:00"#input ("Podaj o ktorej zaczynasz prace eg 07:00:00")
-# working_hours_end = "07:00:00"#input ("Podaj o ktorej konczysz prace eg 15:00:00")
-# start = "2019-02-04"#input(" Podaj date od ktorej zaczynasz zmiane eg 2019-02-02")
-# end = "2019-02-04"#input(" Podaj date koncowa eg 2019-02-05")
-# print(new.set_new_record(api_key,start,end,working_hours_start,working_hours_end))
-#
-
-
-
-
-
-# start = "2019-02-03"
-# end = "2019-02-10"
-# print(int(start[:4]))
-# print(start[5:7])
-# print(start[8:10])
- 
-# payload={
-#   "method": "authenticate",
-#   "params": [
-#     "bartek",
-#     "wafel123"
-#   ],
-#   "id": "1",
-#   "jsonrpc": "2.0"
-# }
-# payload={
-#   "method": "setTimesheetRecord",
-#   "params": ["d894d5865a0a073385cf75da5",{"projectId":1,"taskId":2,"start":"2019-03-31 07:00:00","end":"2019-03-31 09:00:00","commentType":"","statusId":1}],
-#   "id": "1",
-#   "jsonrpc": "2.0"
-# }
-# json_dump = json.dumps(payload)
-# web = 'http://192.168.0.164/kimai/core/json.php'
-# r = requests.post(web,data=json_dump)
-
-# json_data = json.loads(r.text)
-# print(json_data['result']['items'][0]['apiKey'])
-# print(r.url)
 
