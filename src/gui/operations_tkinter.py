@@ -44,7 +44,7 @@ class LoginFrame(tk.Frame):
             tm.showerror("LOGIN ERROR","Błąd logowania, sprawdź czy zmieniłeś hasło w kimai")
         except ValueError:
             cfg=conf.readFromConfig()['cfg']
-            tm.showerror("WEB ERROR", f"Błąd parsowania strony kimai, sprawdź czy zgadza się strona z {cfg}")
+            tm.showerror("WEB ERROR", f"Błąd parsowania\połączenia do strony kimai, sprawdź czy zgadza się strona z {cfg}")
 
         else:
             for widget in self.master.winfo_children():

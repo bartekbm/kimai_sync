@@ -30,7 +30,7 @@ class KimaiLoader:
     requests_list=[]
 
     def returned_requests(self,*text):
-        #self.parse_list(text)
+        self.parse_list(text)
         self.requests_list.append(text)
 
     def read_requests_list(self):
@@ -39,10 +39,15 @@ class KimaiLoader:
 
     def parse_list(self,text):
         #text = json.dumps(text)
-
-        text = json.dumps(text)
+        text=str(text).replace('(', '').replace(')', '')
+        text=text.replace("b","")
+        text = str.encode(text)
+        #text = json.dumps(text)
+        print(text)
         json_data = json.loads(text)
-        print(type(json_data))
+        print(json_data)
+        #print(type(json_data))
+        #print(json_data['result']['items'])
         #json_data = json.loads(str(self.requests_list[0]))
         #print(json_data)
     def clear_requests_list(self):
@@ -55,7 +60,7 @@ class KimaiLoader:
         #web = 'https://kimai.creditagricole/core/json.php'
         try:
             r = requests.post(website, data=dump)
-        except requests.exceptions.MissingSchema:
+        except (requests.exceptions.MissingSchema,requests.exceptions.ConnectionError):
             r=""
             return r
 
@@ -63,7 +68,11 @@ class KimaiLoader:
         return r.content
 
     def catch_api_key(self,string):
+      print(type(string))
+      print(string)
       json_data = json.loads(string)
+      print(type(json_data))
+      print(json_data)
       api_key=json_data['result']['items'][0]['apiKey']
       return api_key
     
