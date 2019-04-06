@@ -28,28 +28,36 @@ class KimaiLoader:
       return self.request(dump)
 
     requests_list=[]
+    green_list=[]
 
-    def returned_requests(self,*text):
+    def returned_requests(self,text):
         self.parse_list(text)
-        self.requests_list.append(text)
 
     def read_requests_list(self):
-        #self.parse_list()
         return self.requests_list
 
+    def read_green_list(self):
+        return self.green_list
+
     def parse_list(self,text):
-        #text = json.dumps(text)
-        text=str(text).replace('(', '').replace(')', '')
-        text=text.replace("b","")
-        text = str.encode(text)
-        #text = json.dumps(text)
-        print(text)
+
         json_data = json.loads(text)
         print(json_data)
-        #print(type(json_data))
-        #print(json_data['result']['items'])
-        #json_data = json.loads(str(self.requests_list[0]))
-        #print(json_data)
+        try:
+            text="\nWpis: " + str(json_data['result']['items'])
+            self.requests_list.append(text)
+        except KeyError:
+            text="\nUwaga błąd: " + str(json_data['result']['error'])
+            self.requests_list.append(text)
+
+        text=" Wynik to: " + str(json_data['result']['success'])
+        self.requests_list.append(text)
+        #self.requests_list.append('\nERROR!')
+        self.green_list.clear()
+        if json_data['result']['success'] == True:
+            self.green_list.clear()
+            self.requests_list.append('\nSUKCES!')
+            self.green_list.append("Jestem zielony")
     def clear_requests_list(self):
 
         self.requests_list.clear()
@@ -65,14 +73,11 @@ class KimaiLoader:
             return r
 
         self.returned_requests(r.content)
+
         return r.content
 
     def catch_api_key(self,string):
-      print(type(string))
-      print(string)
       json_data = json.loads(string)
-      print(type(json_data))
-      print(json_data)
       api_key=json_data['result']['items'][0]['apiKey']
       return api_key
     
@@ -106,8 +111,7 @@ class KimaiLoader:
             tasks_list=[]
             a += 1
 
-        print("result")
-        print(result)
+
         return result
 
     def set_new_record(self,api_key,start,end,working_hours_start,working_hours_end):

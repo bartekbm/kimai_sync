@@ -28,6 +28,7 @@ class LoginFrame(tk.Frame):
 
         self.login_button = tk.Button(master, text="Login", command=self._login_btn_clicked)
         self.login_button.grid(row=1, column=2)
+    clearlist = KimaiLoader()
 
     def _login_btn_clicked(self):
         username = self.input_name.get()
@@ -39,6 +40,8 @@ class LoginFrame(tk.Frame):
         try:
             global api_key
             api_key = new.catch_api_key(auth)
+
+            self.clearlist.clear_requests_list()
 
         except KeyError:
             tm.showerror("LOGIN ERROR","Błąd logowania, sprawdź czy zmieniłeś hasło w kimai")
@@ -67,6 +70,7 @@ class MainAppTk(tk.Frame):
         helpmenu = tk.Menu(menu)
         menu.add_cascade(label="Help", menu=helpmenu)
 
+    clearlist = KimaiLoader()
     def firstSecondDateTimeValidation(self,first,second,start_h,end_h):
         try:
             first_date=datetime.datetime.strptime(first,"%Y-%m-%d")
@@ -103,7 +107,12 @@ class MainAppTk(tk.Frame):
             new_records = KimaiLoader()
             new_records.set_new_record(api_key,start_day,end_day,start_hour,end_hour)
         self.box.delete("0.0", tk.END)
-        self.box.insert(tk.INSERT,new_records.read_requests_list())
+        to_string = "".join(new_records.read_requests_list())
+        if new_records.green_list:
+
+             self.box.insert(tk.INSERT, to_string,"green")
+        else:
+            self.box.insert(tk.INSERT,to_string,"red")
         new_records.clear_requests_list()
 
 
@@ -247,7 +256,7 @@ class MainAppTk(tk.Frame):
             conf.saveToFile(project_value=str(p),project_name=get[1])
             conf.saveToFile(taskId_value="", taskId_name="")
             tm.showinfo("Information","Zapisano, zadania wyzerowane, zapisz zadanie")
-
+            self.clearlist.clear_requests_list()
             projectName_v.set(f"Aktualnie projekt to: {get[1]}")
         button = tk.Button(frame_project,text="zapisz",command=return_clicked_project)
         button.grid(row=2,column=2,sticky=tk.W)
@@ -264,6 +273,7 @@ class MainAppTk(tk.Frame):
              conf.saveToFile(taskId_value=str(get[0]),taskId_name=get[1])
              tm.showinfo("Information", "Zapisano")
              taskName_v.set(f"Aktualnie zadanie to: {get[1]}")
+             self.clearlist.clear_requests_list()
 
         button = tk.Button(frame_task,text="zapisz",command=return_clicked_task)
         button.grid(row=2,column=2,sticky=tk.W)
@@ -379,6 +389,8 @@ class MainAppTk(tk.Frame):
         submit_button.grid(row=4,column=2,pady=10)
 
         self.box = tkst.ScrolledText(master,width  = 70,height = 5)
+        self.box.tag_config('green', foreground='green')
+        self.box.tag_config('red', foreground='red')
         self.box.grid(row=6, column=0,columnspan=13, rowspan=13)
         tk.Label(master, text=f"Projekt: {conf.readFromConfig()['project_name']}").grid(row=4, column=3, sticky=tk.W)
         tk.Label(master, text=f"Zadanie: {conf.readFromConfig()['task_name']}").grid(row=5, column=3,sticky=tk.W)
