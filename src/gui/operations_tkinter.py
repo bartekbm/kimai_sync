@@ -105,10 +105,10 @@ class MainAppTk(tk.Frame):
             return False
 
 
-        if not conf.readFromConfig()['task_name'] :
+        if not conf.readFromConfig()['task_name'] or not conf.readFromConfig()['task_value'] :
             tm.showerror("TASK ERROR", "Nie ustawiono zadania.Pamiętaj, że po ustawieniu nowego proejktu zadanie się zeruje!!")
             return False
-        elif not conf.readFromConfig()['project_name']:
+        elif not conf.readFromConfig()['project_name'] or not conf.readFromConfig()['procject_value']:
             tm.showerror("PROJECT ERROR",
                          "Nie ustawiony projektu")
             return False
