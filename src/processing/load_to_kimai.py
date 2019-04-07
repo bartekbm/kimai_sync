@@ -50,7 +50,7 @@ class KimaiLoader:
             text="\nUwaga błąd: " + str(json_data['result']['error'])
             self.requests_list.append(text)
 
-        text=" Wynik to: " + str(json_data['result']['success'])
+        text=" Status wykonania: " + str(json_data['result']['success'])
         self.requests_list.append(text)
         #self.requests_list.append('\nERROR!')
         self.green_list.clear()
@@ -71,7 +71,6 @@ class KimaiLoader:
         except (requests.exceptions.MissingSchema,requests.exceptions.ConnectionError):
             r=""
             return r
-
         self.returned_requests(r.content)
 
         return r.content
@@ -80,6 +79,7 @@ class KimaiLoader:
       json_data = json.loads(string)
       api_key=json_data['result']['items'][0]['apiKey']
       return api_key
+
     
 
     def get_project(self,api_key):

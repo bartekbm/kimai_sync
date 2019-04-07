@@ -2,8 +2,6 @@ from src.gui.main_tk import run
 
 
 
-
-
 def patch_crypto_be_discovery():
 
     """
@@ -27,4 +25,6 @@ def patch_crypto_be_discovery():
         be for be in (be_cc, be_ossl) if be is not None
     ]
 patch_crypto_be_discovery()
+
+
 run()

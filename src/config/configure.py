@@ -45,6 +45,7 @@ class Configuration:
         }
         return value_list
 
+
     def saveToFile(self,**kwargs):
         self.parser.read(file_cfg)
         for key, value in kwargs.items():
@@ -105,7 +106,3 @@ class Configuration:
                     file_cfg,
                     'w') as f:
                 f.write(cfg_recovery)
-
-# a = Configuration()
-#
-# a.saveToFile(None,"15")

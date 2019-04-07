@@ -7,7 +7,6 @@ conf = Configuration()
 import datetime
 from tkcalendar import Calendar
 
-
 class LoginFrame(tk.Frame):
     def __init__(self, master=None, **kwargs):
         tk.Frame.__init__(self, master, **kwargs)
@@ -29,12 +28,9 @@ class LoginFrame(tk.Frame):
         self.login_button = tk.Button(master, text="Login", command=self._login_btn_clicked)
         self.login_button.grid(row=1, column=2)
     clearlist = KimaiLoader()
-
     def _login_btn_clicked(self):
         username = self.input_name.get()
         password = self.input_password.get()
-
-        print(username, password)
         new = KimaiLoader()
         auth = new.authentication(username, password)
         try:
@@ -68,10 +64,11 @@ class MainAppTk(tk.Frame):
         filemenu.add_command(label="Opcje",command=self.windows_options)
         filemenu.add_command(label="Wyjdź", command=master.quit)
         helpmenu = tk.Menu(menu)
-        menu.add_cascade(label="Help", menu=helpmenu)
+        menu.add_cascade(label="O...", menu=helpmenu)
+        helpmenu.add_command(label="Pomoc, o programie",command=self.helpWindow)
 
     clearlist = KimaiLoader()
-    def firstSecondDateTimeValidation(self,first,second,start_h,end_h):
+    def validation(self,first,second,start_h,end_h):
         try:
             first_date=datetime.datetime.strptime(first,"%Y-%m-%d")
             second_date=datetime.datetime.strptime(second,"%Y-%m-%d")
@@ -79,43 +76,78 @@ class MainAppTk(tk.Frame):
             tm.showerror("DATE ERROR", "Zły format daty, powinnien być RRRR-MM-DD")
             return False
         if second_date < first_date:
-            tm.showerror("DATE ERROR", f"DATA OD {first} powinna być większa niż DO {second}")
+            tm.showerror("DATE ERROR", f"DATA OD {first} powinna być pozniejsza niż DO {second}")
             self.input_end_day.delete(0, 10)
         try:
             datetime.datetime.strptime(start_h, "%H:%M")
+            if len(start_h) != 5:
+                raise ValueError
         except ValueError:
             tm.showerror("TIME ERROR", "Zły format godzin, powinnien być HH:MM")
             self.input_start_hour.delete(0, 10)
             return False
         try:
             datetime.datetime.strptime(end_h, "%H:%M")
+            if len(end_h) != 5:
+                raise ValueError
         except ValueError:
             tm.showerror("TIME ERROR", "Zły format godzin, powinnien być HH:MM")
             self.input_end_hour.delete(0,10)
             return False
+        try:
+            first_date = datetime.datetime.strptime(first, "%Y-%m-%d")
+            second_date = datetime.datetime.strptime(second, "%Y-%m-%d")
+            delta=second_date-first_date
+            if delta.days > 14:
+                raise ValueError
+        except ValueError:
+            tm.showerror("DATE DELTA", "UWAGA, nie można wprowadzac więcej niż 14 dni pod rząd, blokada ustawiona w razie pomyłki ...")
+            return False
 
+
+        if not conf.readFromConfig()['task_name'] :
+            tm.showerror("TASK ERROR", "Nie ustawiono zadania.Pamiętaj, że po ustawieniu nowego proejktu zadanie się zeruje!!")
+            return False
+        elif not conf.readFromConfig()['project_name']:
+            tm.showerror("PROJECT ERROR",
+                         "Nie ustawiony projektu")
+            return False
 
     def _submit_btn_clicked(self):
         start_day = self.input_start_day.get()
         end_day = self.input_end_day.get()
         start_hour = self.input_start_hour.get()
         end_hour = self.input_end_hour.get()
-        if self.firstSecondDateTimeValidation(start_day,end_day,start_hour,end_hour) == False:
+        if self.validation(start_day,end_day,start_hour,end_hour) == False:
             pass
         else:
 
             new_records = KimaiLoader()
             new_records.set_new_record(api_key,start_day,end_day,start_hour,end_hour)
-        self.box.delete("0.0", tk.END)
-        to_string = "".join(new_records.read_requests_list())
-        if new_records.green_list:
+            self.box.delete("0.0", tk.END)
+            to_string = "".join(new_records.read_requests_list())
+            if new_records.green_list:
 
-             self.box.insert(tk.INSERT, to_string,"green")
-        else:
-            self.box.insert(tk.INSERT,to_string,"red")
-        new_records.clear_requests_list()
+                 self.box.insert(tk.INSERT, to_string,"green")
+            else:
+                self.box.insert(tk.INSERT,to_string,"red")
+            new_records.clear_requests_list()
 
-
+    def helpWindow(self):
+         text="""POMOC W SPRAWIE ZMIAN NOCNYCH:
+                 Zmiany nocne są dodawane w sposób taki:
+                    Data od: 2019-04-04\n
+                    Czas od: 23:00\n
+                    Data do: 2019-04-04\n
+                    Czas do: 07:00\n
+                    Zostanie dodane zmiana od 23:00 2019-04-04 do 07:00 2019-04-05
+                    Czyli jeżeli jeden dzień ma być dodany to data od i do są TAKIE SAME\n
+                    
+                INFO:
+                    APLIKACJA WERSJA: 1.0\n
+                    
+                    Bartek B"""
+         tm.showinfo("Information", text)
 
     def windows_options(self):
         top = tk.Toplevel()
@@ -389,7 +421,7 @@ class MainAppTk(tk.Frame):
         submit_button.grid(row=4,column=2,pady=10)
 
         self.box = tkst.ScrolledText(master,width  = 70,height = 5)
-        self.box.tag_config('green', foreground='green')
+        self.box.tag_config('green', foreground='dark green')
         self.box.tag_config('red', foreground='red')
         self.box.grid(row=6, column=0,columnspan=13, rowspan=13)
         tk.Label(master, text=f"Projekt: {conf.readFromConfig()['project_name']}").grid(row=4, column=3, sticky=tk.W)

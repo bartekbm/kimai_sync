@@ -1,13 +1,11 @@
 import tkinter as tk
-import tkinter.messagebox as tm
+
 from src.gui.operations_tkinter import LoginFrame
 from src.config.configure import Configuration
-# root = Tk()
-# lf = LoginFrame(root)
-# root.mainloop()
+
+log = open("log.txt", "w")
 class Mainframe(tk.Tk):
     def __init__(self):
-        print("tu jestem")
         tk.Tk.__init__(self)
         self.frame = LoginFrame(self)
         self.frame.grid()
@@ -15,15 +13,22 @@ class Mainframe(tk.Tk):
 
     def change(self, frame):
         self.frame = frame(self)
-        self.frame.grid()  # make new frame
+        self.frame.grid()
 
 def run():
     #if __name__ == "__main__":
-        print("tu jestem")
         check_cfg=Configuration()
         check_cfg.checkRecoveryCfg()
         app = Mainframe()
         app.mainloop()
+
+
+
+
+
+
+
+
 
 # topFrame = Frame(root)
 # topFrame.pack()
