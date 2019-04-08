@@ -3,7 +3,7 @@ import tkinter as tk
 from src.gui.operations_tkinter import LoginFrame
 from src.config.configure import Configuration
 
-log = open("log.txt", "w")
+
 class Mainframe(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)

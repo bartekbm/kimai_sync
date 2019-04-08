@@ -7,7 +7,7 @@ parentDir = os.path.dirname(fileDir)
 parentDirLvlDown = os.path.dirname(parentDir)
 
 file_cfg_path = os.path.join(parentDirLvlDown, 'cfg.ini')
-
+ico=os.path.join(parentDirLvlDown, 'favicon.ico')
 file_cfg = Path(file_cfg_path)
 
 
@@ -75,7 +75,8 @@ class Configuration:
         with open(file_cfg, 'w') as configfile:
             self.parser.write(configfile)
 
-
+    def fileGlobal(self):
+        return ico
     def checkRecoveryCfg(self):
         cfg_recovery = '''
         [project_value]
@@ -87,16 +88,13 @@ class Configuration:
         task = !!!_OP-opieka na dziecko
         
         [hours]
-        a = 7:00,15:00
+        a = 07:00,15:00
         b = 15:00,23:00
         c = 23:00,07:00
         cc = 19:00,07:00
         w = 07:00,19:00
         random = 06:00,23:00
-        
-        [user]
-        username = bartek
-        
+
         [web]
         site = http://192.168.0.164/kimai/core/json.php
         '''

@@ -2,7 +2,7 @@ import requests
 import json
 from datetime import date, timedelta
 from src.config.configure import Configuration
-
+from requests_kerberos import HTTPKerberosAuth
 
 class KimaiLoader:
     
@@ -65,9 +65,11 @@ class KimaiLoader:
     def request(self,dump):
         webConf=Configuration()
         website=webConf.readFromConfig()['website']
+        #r = requests.post(web, data=dump, auth=HTTPKerberosAuth(), verify=False)
         #web = 'https://kimai.creditagricole/core/json.php'
         try:
-            r = requests.post(website, data=dump)
+            #r = requests.post(website, data=dump)
+            r = requests.post(website, data=dump, auth=HTTPKerberosAuth(), verify=False)
         except (requests.exceptions.MissingSchema,requests.exceptions.ConnectionError):
             r=""
             return r

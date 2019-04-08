@@ -10,7 +10,9 @@ from tkcalendar import Calendar
 class LoginFrame(tk.Frame):
     def __init__(self, master=None, **kwargs):
         tk.Frame.__init__(self, master, **kwargs)
-
+        confico = Configuration()
+        master.iconbitmap(confico.fileGlobal())
+        master.title("Kimai Loader")
         self.label_name = tk.Label(master, text="Username", fg="black")
         self.label_password = tk.Label(master, text="Password", fg="black")
         self.input_name = tk.Entry(master)
@@ -53,9 +55,12 @@ class LoginFrame(tk.Frame):
 
 class MainAppTk(tk.Frame):
     def __init__(self, master=None, **kwargs):
+
         tk.Frame.__init__(self, master, **kwargs)
-        master.title("Main application")
-        master.geometry("570x300")
+        master.title("Kimai Loader")
+        master.geometry("590x320")
+        confico = Configuration()
+        master.iconbitmap(confico.fileGlobal())
         self.content(master)
         menu=tk.Menu(master)
         master.config(menu=menu)
@@ -106,7 +111,7 @@ class MainAppTk(tk.Frame):
 
 
         if not conf.readFromConfig()['task_name'] or not conf.readFromConfig()['task_value'] :
-            tm.showerror("TASK ERROR", "Nie ustawiono zadania.Pamiętaj, że po ustawieniu nowego proejktu zadanie się zeruje!!")
+            tm.showerror("TASK ERROR", "Nie ustawiono zadania.Pamiętaj, że po ustawieniu nowego projektu zadanie się zeruje!!")
             return False
         elif not conf.readFromConfig()['project_name'] or not conf.readFromConfig()['procject_value']:
             tm.showerror("PROJECT ERROR",
@@ -135,24 +140,26 @@ class MainAppTk(tk.Frame):
 
     def helpWindow(self):
          text="""POMOC W SPRAWIE ZMIAN NOCNYCH:
-                 Zmiany nocne są dodawane w sposób taki:
+Zmiany nocne są dodawane w sposób taki:
                     Data od: 2019-04-04\n
                     Czas od: 23:00\n
                     Data do: 2019-04-04\n
                     Czas do: 07:00\n
-                    Zostanie dodane zmiana od 23:00 2019-04-04 do 07:00 2019-04-05
-                    Czyli jeżeli jeden dzień ma być dodany to data od i do są TAKIE SAME\n
+Zostanie dodane zmiana od 23:00 2019-04-04 do 07:00 2019-04-05
+Czyli jeżeli jeden dzień ma być dodany to data od i do są TAKIE SAME\n
                     
-                INFO:
-                    APLIKACJA WERSJA: 1.0\n
+INFO:
+    APLIKACJA WERSJA: 1.0\n
                     
-                    Bartek B"""
+    Bartek B"""
          tm.showinfo("Information", text)
 
     def windows_options(self):
         top = tk.Toplevel()
-        top.geometry("450x400")
+        top.geometry("500x430")
         top.title("Opcje")
+        confico = Configuration()
+        top.iconbitmap(confico.fileGlobal())
         list = KimaiLoader()
         projectName_v = tk.StringVar()
         taskName_v = tk.StringVar()
@@ -187,11 +194,11 @@ class MainAppTk(tk.Frame):
         hours_project = tk.Frame(top)
         hours_project.pack(side=tk.LEFT)
         tk.Label(frame_project, text="Wybierz projekt domyślny").grid(row=1,column=0,sticky=tk.W)
-        projectName_v.set(f"Aktualnie projekt to: {conf.readFromConfig()['project_name']}")
+        projectName_v.set(f"Aktualnie projekt to:\n {conf.readFromConfig()['project_name']}")
         #taskName_v.set(f"Aktualnie zadanie to: {conf.readFromConfig()['task_name']}")
-        tk.Label(frame_project, textvariable=projectName_v).grid(row=0,column=2,sticky=tk.W)
+        tk.Label(frame_project, textvariable=projectName_v).grid(row=0,column=0,sticky=tk.W)
         tk.Label(frame_task, text="Wybierz zadanie domyślne").grid(row=1,column=0,sticky=tk.W)
-        tk.Label(frame_task, textvariable=taskName_v).grid(row=0,column=2,sticky=tk.W,pady=10)
+        tk.Label(frame_task, textvariable=taskName_v).grid(row=0,column=0,sticky=tk.W,pady=10)
         label_hours_a = tk.Label(hours_project, text=f'A, jest od {conf.readFromConfig()["shift_a"][0]} do {conf.readFromConfig()["shift_a"][1]}, zmień na: ', fg="black")
         label_hours_between_a = tk.Label(hours_project,text=f'do',fg="black")
         label_hours_between_b = tk.Label(hours_project, text=f'do', fg="black")
@@ -259,9 +266,10 @@ class MainAppTk(tk.Frame):
 
                 TasksList.insert(a, insert)
                 a += 1
-        ProjectList = tk.Listbox(frame_project, width=30, height=3, font=("Helvetica", 8))
+        ProjectList = tk.Listbox(frame_project, width=50, height=4, font=("Helvetica", 8))
         project=list.get_project(api_key)
         project_list=list.catch_result(project)
+        self.clearlist.clear_requests_list()
         a = 0
         while a != len(project_list):
             insert=(project_list[a].get('project_id')),project_list[a].get('project_name')
@@ -289,10 +297,10 @@ class MainAppTk(tk.Frame):
             conf.saveToFile(taskId_value="", taskId_name="")
             tm.showinfo("Information","Zapisano, zadania wyzerowane, zapisz zadanie")
             self.clearlist.clear_requests_list()
-            projectName_v.set(f"Aktualnie projekt to: {get[1]}")
+            projectName_v.set(f"Aktualnie projekt to:\n {get[1]}")
         button = tk.Button(frame_project,text="zapisz",command=return_clicked_project)
         button.grid(row=2,column=2,sticky=tk.W)
-        TasksList = tk.Listbox(frame_task, width=30, height=3, font=("Helvetica", 8))
+        TasksList = tk.Listbox(frame_task, width=50, height=4, font=("Helvetica", 8))
 
         scrollbar_task = tk.Scrollbar(frame_task, orient="vertical")
         scrollbar_task.config(command=TasksList.yview)
@@ -304,7 +312,7 @@ class MainAppTk(tk.Frame):
              get=TasksList.get(clicked_task)
              conf.saveToFile(taskId_value=str(get[0]),taskId_name=get[1])
              tm.showinfo("Information", "Zapisano")
-             taskName_v.set(f"Aktualnie zadanie to: {get[1]}")
+             taskName_v.set(f"Aktualnie zadanie to:\n {get[1]}")
              self.clearlist.clear_requests_list()
 
         button = tk.Button(frame_task,text="zapisz",command=return_clicked_task)
