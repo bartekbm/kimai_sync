@@ -61,7 +61,7 @@ class MainAppTk(tk.Frame):
         master.geometry("590x320")
         confico = Configuration()
         master.iconbitmap(confico.fileGlobal())
-        self.content(master)
+        self.content()
         menu=tk.Menu(master)
         master.config(menu=menu)
         filemenu = tk.Menu(menu)
@@ -140,7 +140,7 @@ class MainAppTk(tk.Frame):
 
     def helpWindow(self):
          text="""POMOC W SPRAWIE ZMIAN NOCNYCH:
-Zmiany nocne są dodawane w sposób taki:
+Zmiany nocne są dodawane w sposób taki:\n
                     Data od: 2019-04-04\n
                     Czas od: 23:00\n
                     Data do: 2019-04-04\n
@@ -153,6 +153,7 @@ INFO:
                     
     Bartek B"""
          tm.showinfo("Information", text)
+
 
     def windows_options(self):
         top = tk.Toplevel()
@@ -195,6 +196,7 @@ INFO:
         hours_project.pack(side=tk.LEFT)
         tk.Label(frame_project, text="Wybierz projekt domyślny").grid(row=1,column=0,sticky=tk.W)
         projectName_v.set(f"Aktualnie projekt to:\n {conf.readFromConfig()['project_name']}")
+
         #taskName_v.set(f"Aktualnie zadanie to: {conf.readFromConfig()['task_name']}")
         tk.Label(frame_project, textvariable=projectName_v).grid(row=0,column=0,sticky=tk.W)
         tk.Label(frame_task, text="Wybierz zadanie domyślne").grid(row=1,column=0,sticky=tk.W)
@@ -298,6 +300,8 @@ INFO:
             tm.showinfo("Information","Zapisano, zadania wyzerowane, zapisz zadanie")
             self.clearlist.clear_requests_list()
             projectName_v.set(f"Aktualnie projekt to:\n {get[1]}")
+            if projectName_v:
+                self.content(project_v=f"Projekt: {get[1]}")
         button = tk.Button(frame_project,text="zapisz",command=return_clicked_project)
         button.grid(row=2,column=2,sticky=tk.W)
         TasksList = tk.Listbox(frame_task, width=50, height=4, font=("Helvetica", 8))
@@ -314,6 +318,9 @@ INFO:
              tm.showinfo("Information", "Zapisano")
              taskName_v.set(f"Aktualnie zadanie to:\n {get[1]}")
              self.clearlist.clear_requests_list()
+             if taskName_v:
+                 self.update()
+                 self.content(task_v=f"Zadanie: {get[1]}")
 
         button = tk.Button(frame_task,text="zapisz",command=return_clicked_task)
         button.grid(row=2,column=2,sticky=tk.W)
@@ -387,12 +394,13 @@ INFO:
         self.input_end_hour.insert(10, value_e)
 
 
-    def content(self,master):
+    def content(self,project_v=None,task_v=None):
+
 
         acts = ['zmiana a', 'zmiana b',
                 'zmiana c', 'zmiana cc', 'zmiana w','własna']
 
-        lb = tk.Listbox(master,height=6,width=10)
+        lb = tk.Listbox(self.master,height=6,width=10)
 
         for i in acts:
             lb.insert(tk.END, i)
@@ -400,21 +408,30 @@ INFO:
         lb.bind("<<ListboxSelect>>", self.onSelect)
 
         lb.grid(row=0,column=3,columnspan=1, rowspan=3,pady=5,padx=5)
+        self.var=tk.StringVar
 
-        self.var = tk.StringVar()
+        test = tk.StringVar()
+        print(project_v, task_v)
+        if project_v:
+            test.set(project_v)
 
+        print(project_v,task_v)
+        if project_v is None:
+            project_v=f"Projekt: {conf.readFromConfig()['project_name']}"
+        if task_v is None:
+            task_v=f"Zadanie: {conf.readFromConfig()['task_name']}"
 
-        label_start_day = tk.Label(master, text="Data OD", fg="black")
-        label_start_hour = tk.Label(master, text="Godzina OD", fg="black")
-        self.input_start_day = tk.Entry(master)
-        self.input_start_hour = tk.Entry(master)
-        label_end_day = tk.Label(master, text="Data DO", fg="black")
-        label_end_hour = tk.Label(master, text="Godzina DO", fg="black")
-        date_button = tk.Button(master, text='Data', command=self.gui_calendar_start)
-        date_buttone = tk.Button(master, text='Data', command=self.gui_calendar_end)
+        label_start_day = tk.Label(self.master, text="Data OD", fg="black")
+        label_start_hour = tk.Label(self.master, text="Godzina OD", fg="black")
+        self.input_start_day = tk.Entry(self.master)
+        self.input_start_hour = tk.Entry(self.master)
+        label_end_day = tk.Label(self.master, text="Data DO", fg="black")
+        label_end_hour = tk.Label(self.master, text="Godzina DO", fg="black")
+        date_button = tk.Button(self.master, text='Data', command=self.gui_calendar_start)
+        date_buttone = tk.Button(self.master, text='Data', command=self.gui_calendar_end)
 
-        self.input_end_day = tk.Entry(master)
-        self.input_end_hour = tk.Entry(master)
+        self.input_end_day = tk.Entry(self.master)
+        self.input_end_hour = tk.Entry(self.master)
         label_start_day.grid(row=0, column=0, sticky=tk.W)
         label_start_hour.grid(row=1, column=0, sticky=tk.W)
         self.input_start_day.grid(row=0, column=1)
@@ -425,12 +442,12 @@ INFO:
         self.input_end_day.grid(row=2, column=1)
         date_buttone.grid(row=2, column=2,padx=5)
         self.input_end_hour.grid(row=3, column=1)
-        submit_button = tk.Button(master, text="Zapisz do KIMAI", command=self._submit_btn_clicked)
+        submit_button = tk.Button(self.master, text="Zapisz do KIMAI", command=self._submit_btn_clicked)
         submit_button.grid(row=4,column=2,pady=10)
 
-        self.box = tkst.ScrolledText(master,width  = 70,height = 5)
+        self.box = tkst.ScrolledText(self.master,width  = 70,height = 5)
         self.box.tag_config('green', foreground='dark green')
         self.box.tag_config('red', foreground='red')
         self.box.grid(row=6, column=0,columnspan=13, rowspan=13)
-        tk.Label(master, text=f"Projekt: {conf.readFromConfig()['project_name']}").grid(row=4, column=3, sticky=tk.W)
-        tk.Label(master, text=f"Zadanie: {conf.readFromConfig()['task_name']}").grid(row=5, column=3,sticky=tk.W)
+        tk.Label(self.master,textvariable=test).grid(row=4, column=3, sticky=tk.W)
+        tk.Label(self.master, text=task_v).grid(row=5, column=3,sticky=tk.W)

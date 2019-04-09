@@ -96,7 +96,7 @@ class Configuration:
         random = 06:00,23:00
 
         [web]
-        site = http://192.168.0.164/kimai/core/json.php
+        site = https://kimai.creditagricole/core/json.php
         '''
 
         if file_cfg.is_file() == False:

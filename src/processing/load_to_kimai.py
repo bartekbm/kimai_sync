@@ -2,7 +2,7 @@ import requests
 import json
 from datetime import date, timedelta
 from src.config.configure import Configuration
-from requests_kerberos import HTTPKerberosAuth
+from requests_kerberos import HTTPKerberosAuth as rk
 
 class KimaiLoader:
     
@@ -40,9 +40,11 @@ class KimaiLoader:
         return self.green_list
 
     def parse_list(self,text):
+        try:
+            json_data = json.loads(text)
+        except:
+            return ""
 
-        json_data = json.loads(text)
-        print(json_data)
         try:
             text="\nWpis: " + str(json_data['result']['items'])
             self.requests_list.append(text)
@@ -68,9 +70,9 @@ class KimaiLoader:
         #r = requests.post(web, data=dump, auth=HTTPKerberosAuth(), verify=False)
         #web = 'https://kimai.creditagricole/core/json.php'
         try:
-            #r = requests.post(website, data=dump)
-            r = requests.post(website, data=dump, auth=HTTPKerberosAuth(), verify=False)
-        except (requests.exceptions.MissingSchema,requests.exceptions.ConnectionError):
+            r = requests.post(website, data=dump)
+            #r = requests.post(website, data=dump, auth=rk(), verify=False)
+        except:
             r=""
             return r
         self.returned_requests(r.content)
