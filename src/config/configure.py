@@ -79,25 +79,24 @@ class Configuration:
         return ico
     def checkRecoveryCfg(self):
         cfg_recovery = '''
-        [project_value]
-        projectid = 2
-        taskid = 4
-        
-        [project_name]
-        project = !P000_WsparcieProdukcji
-        task = !!!_OP-opieka na dziecko
-        
-        [hours]
-        a = 07:00,15:00
-        b = 15:00,23:00
-        c = 23:00,07:00
-        cc = 19:00,07:00
-        w = 07:00,19:00
-        random = 06:00,23:00
+[project_value]
+projectid = 57
+taskid = 17
 
-        [web]
-        site = https://kimai.creditagricole/core/json.php
-        '''
+[project_name]
+project = !P000_WsparcieProdukcji (DDUIT_US_OPER)
+task = !!!_Praca operacyjna
+        
+[hours]
+a = 07:00,15:00
+b = 15:00,23:00
+c = 23:00,07:00
+cc = 19:00,07:00
+w = 07:00,19:00
+random = 06:00,23:00
+
+[web]
+site= https://kimai.creditagricole/core/json.php'''
 
         if file_cfg.is_file() == False:
             with open(

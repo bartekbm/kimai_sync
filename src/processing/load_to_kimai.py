@@ -70,8 +70,8 @@ class KimaiLoader:
         #r = requests.post(web, data=dump, auth=HTTPKerberosAuth(), verify=False)
         #web = 'https://kimai.creditagricole/core/json.php'
         try:
-            r = requests.post(website, data=dump)
-            #r = requests.post(website, data=dump, auth=rk(), verify=False)
+            #r = requests.post(website, data=dump)
+            r = requests.post(website, data=dump, auth=rk(), verify=False)
         except:
             r=""
             return r
