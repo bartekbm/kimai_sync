@@ -2,6 +2,7 @@ import requests
 import json
 from datetime import date, timedelta
 from src.config.configure import Configuration
+from src.processing.reports import ReportsHandling
 from requests_kerberos import HTTPKerberosAuth as rk
 
 class KimaiLoader:
@@ -70,8 +71,8 @@ class KimaiLoader:
         #r = requests.post(web, data=dump, auth=HTTPKerberosAuth(), verify=False)
         #web = 'https://kimai.creditagricole/core/json.php'
         try:
-            #r = requests.post(website, data=dump)
-            r = requests.post(website, data=dump, auth=rk(), verify=False)
+            r = requests.post(website, data=dump)
+            #r = requests.post(website, data=dump, auth=rk(), verify=False)
         except:
             r=""
             return r
@@ -89,7 +90,13 @@ class KimaiLoader:
     def get_project(self,api_key):
         return self.api_payload('getProjects', [api_key,'includeTasks'])
 
+    def get_reports(self,api_key):
+        return self.api_payload('getTimesheet',[api_key])
 
+    def catch_reports(self,to_catch):
+        json_data = json.loads(to_catch)
+        reports=ReportsHandling(json_data['result']['items'])
+        reports.test()
     def catch_result(self,to_catch,tasks=None):
         json_data = json.loads(to_catch)
         catching= json_data['result']['items']

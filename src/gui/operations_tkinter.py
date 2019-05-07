@@ -396,7 +396,9 @@ INFO:
 
 
     def content(self,project_v=None,task_v=None):
-
+        reports=KimaiLoader()
+        reports_l=reports.get_reports(api_key)
+        reports_l=reports.catch_reports(reports_l)
         self.boxproject = tk.Text(self.master, height=1, width=60)
         self.boxtask = tk.Text(self.master, height=1, width=60)
         acts = ['zmiana a', 'zmiana b',

@@ -96,7 +96,7 @@ w = 07:00,19:00
 random = 06:00,23:00
 
 [web]
-site= https://kimai.creditagricole/core/json.php'''
+site= http://192.168.0.164/kimai/core/json.php'''
 
         if file_cfg.is_file() == False:
             with open(
