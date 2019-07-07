@@ -1,1 +1,1 @@
-# kimai_xls_sync
+# kimai_sync
